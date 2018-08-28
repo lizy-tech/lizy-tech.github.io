@@ -88,7 +88,7 @@
 <meta property="og:description" content="基本概念树是由n(n&amp;gt;=0)个节点组成的有限集合（记为T）。其中，如果n=0,表示一棵空树如果n&amp;gt;0,这n个结点中存在（有仅存在）一个结点作为树的根节点，简称为根（root），其余结点可分为m(m&amp;gt;=0)个互不相交的有限集，其中每一棵子集本身又是一棵符合定义的树，称为根的子树。  度结点的度：该结点的子树的个数树的度：树中各结点的度最大值通常将度为m的树称为m次树，如图1是一颗">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://lizy-tech.github.io/数据结构-树-基本概念/tree.png">
-<meta property="og:updated_time" content="2018-08-27T15:11:40.916Z">
+<meta property="og:updated_time" content="2018-08-28T03:35:33.050Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构-树(基本概念)">
 <meta name="twitter:description" content="基本概念树是由n(n&amp;gt;=0)个节点组成的有限集合（记为T）。其中，如果n=0,表示一棵空树如果n&amp;gt;0,这n个结点中存在（有仅存在）一个结点作为树的根节点，简称为根（root），其余结点可分为m(m&amp;gt;=0)个互不相交的有限集，其中每一棵子集本身又是一棵符合定义的树，称为根的子树。  度结点的度：该结点的子树的个数树的度：树中各结点的度最大值通常将度为m的树称为m次树，如图1是一颗">
@@ -310,8 +310,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-08-27T23:11:40+08:00">
-                2018-08-27
+              <time title="更新于" itemprop="dateModified" datetime="2018-08-28T11:35:33+08:00">
+                2018-08-28
               </time>
             
           </span>
@@ -366,7 +366,7 @@
       
 
       
-    
+        <p><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script></p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>树是由n(n&gt;=0)个节点组成的有限集合（记为T）。其中，<br>如果n=0,表示一棵空树<br>如果n&gt;0,这n个结点中存在（有仅存在）一个结点作为树的根节点，简称为根（root），其余结点可分为m(m&gt;=0)个互不相交的有限集，其中每一棵子集本身又是一棵符合定义的树，称为根的子树。</p>
 <img src="/数据结构-树-基本概念/tree.png" title="图1 一棵树">
 <h3 id="度"><a href="#度" class="headerlink" title="度"></a>度</h3><p><strong>结点的度</strong>：该结点的子树的个数<br><strong>树的度</strong>：树中各结点的度最大值<br>通常将度为m的树称为m次树，如图1是一颗3次树，结点I的度为3</p>
@@ -416,6 +416,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -695,7 +699,6 @@
 
 
   <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
 
 
@@ -748,6 +751,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
