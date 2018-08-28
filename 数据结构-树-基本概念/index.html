@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -88,7 +88,7 @@
 <meta property="og:description" content="基本概念树是由n(n&amp;gt;=0)个节点组成的有限集合（记为T）。其中，如果n=0,表示一棵空树如果n&amp;gt;0,这n个结点中存在（有仅存在）一个结点作为树的根节点，简称为根（root），其余结点可分为m(m&amp;gt;=0)个互不相交的有限集，其中每一棵子集本身又是一棵符合定义的树，称为根的子树。  度结点的度：该结点的子树的个数树的度：树中各结点的度最大值通常将度为m的树称为m次树，如图1是一颗">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://lizy-tech.github.io/数据结构-树-基本概念/tree.png">
-<meta property="og:updated_time" content="2018-08-28T03:35:33.050Z">
+<meta property="og:updated_time" content="2018-08-28T03:50:51.224Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构-树(基本概念)">
 <meta name="twitter:description" content="基本概念树是由n(n&amp;gt;=0)个节点组成的有限集合（记为T）。其中，如果n=0,表示一棵空树如果n&amp;gt;0,这n个结点中存在（有仅存在）一个结点作为树的根节点，简称为根（root），其余结点可分为m(m&amp;gt;=0)个互不相交的有限集，其中每一棵子集本身又是一棵符合定义的树，称为根的子树。  度结点的度：该结点的子树的个数树的度：树中各结点的度最大值通常将度为m的树称为m次树，如图1是一颗">
@@ -128,7 +128,7 @@
 
 
 
-  <title>数据结构-树(基本概念) | lizy-tech</title>
+  <title>数据结构-树(基本概念) | lizy-tech</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -147,7 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -310,7 +310,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-08-28T11:35:33+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2018-08-28T11:50:51+08:00">
                 2018-08-28
               </time>
             
@@ -374,8 +374,11 @@
 <h3 id="层次，高度"><a href="#层次，高度" class="headerlink" title="层次，高度"></a>层次，高度</h3><p><strong>结点的层次</strong>从树的根开始定义，根节点为第一层，它的孩子结点为第二层，以此类推，一个结点所在的层次为其双亲结点所在的层次加1。<br>树中结点的最大层次称为<strong>树的高度</strong></p>
 <h3 id="有序树和无序树"><a href="#有序树和无序树" class="headerlink" title="有序树和无序树"></a>有序树和无序树</h3><p>若树中各结点的子树是按照一定的次序从左到右安排的，且相对次序是不能随意变换的，则称为<strong>有序树</strong>，否则称为无序树。</p>
 <h3 id="森林"><a href="#森林" class="headerlink" title="森林"></a>森林</h3><p>n(n&gt;0)个互不相交的树的集合称为森林</p>
-<h2 id="树的性质"><a href="#树的性质" class="headerlink" title="树的性质"></a>树的性质</h2><p><strong>性质 1</strong> ：树中的结点数等于所有结点的度数加1<br><strong>性质 2</strong> ：度为m的树中第i层至多有m<sup>i-1</sup>个结点（i&gt;=0）<br><strong>性质 3</strong> ：高度为h的m次树至多有\(\frac{m^h-1}{m-1}\)个结点<br><strong>性质 4</strong> ：具有n个结点的m次树的最小高度为<br>        $$\lceil\log_m(n(m-1)+1)\rceil$$</p>
+<h2 id="树的性质"><a href="#树的性质" class="headerlink" title="树的性质"></a>树的性质</h2><p><strong>性质 1</strong> ：树中的结点数等于所有结点的度数加1<br><strong>性质 2</strong> ：度为m的树中第i层至多有m<sup>i-1</sup>个结点（i&gt;=0）<br><strong>性质 3</strong> ：高度为h的m次树至多有\(\frac{m^h-1}{m-1}\)个结点<br><strong>性质 4</strong> ：具有n个结点的m次树的最小高度为</p>
+<pre><code>    $$\lceil\log_m(n(m-1)+1)\rceil$$
 
+    $$lim_{1\to+\infty}P(|\frac{1}{n}\sum_i^nX_i-\mu|&lt;\epsilon)=1, i=1,...,n$$ 
+</code></pre>
       
     </div>
     
@@ -770,7 +773,24 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
   
 
 
