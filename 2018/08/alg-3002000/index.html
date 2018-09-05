@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="二叉树," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近新整了一下hexo博客，然后就总想写点什么，思前想后最终决定把以前的知识总结总结。上一篇罗列了一下树的相关概念，这一篇起开始整点干货了。由于现在主要写java，所以本文的算法实现都是java版本的 二叉树结点的定义采用单向链表的的形式，只从根节点指向孩子节点，不保存父节点。1234567public class BinaryTree&amp;lt;Value extends Comparable&amp;lt">
+<meta name="keywords" content="二叉树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二叉树相关算法总结">
+<meta property="og:url" content="https://lizy-tech.github.io/2018/08/alg-3002000/index.html">
+<meta property="og:site_name" content="lizy-tech">
+<meta property="og:description" content="最近新整了一下hexo博客，然后就总想写点什么，思前想后最终决定把以前的知识总结总结。上一篇罗列了一下树的相关概念，这一篇起开始整点干货了。由于现在主要写java，所以本文的算法实现都是java版本的 二叉树结点的定义采用单向链表的的形式，只从根节点指向孩子节点，不保存父节点。1234567public class BinaryTree&amp;lt;Value extends Comparable&amp;lt">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-04T11:07:05.236Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="二叉树相关算法总结">
+<meta name="twitter:description" content="最近新整了一下hexo博客，然后就总想写点什么，思前想后最终决定把以前的知识总结总结。上一篇罗列了一下树的相关概念，这一篇起开始整点干货了。由于现在主要写java，所以本文的算法实现都是java版本的 二叉树结点的定义采用单向链表的的形式，只从根节点指向孩子节点，不保存父节点。1234567public class BinaryTree&amp;lt;Value extends Comparable&amp;lt">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://lizy-tech.github.io/2018/08/alg-3002000/"/>
+
+
+
+
+
+  <title>二叉树相关算法总结 | lizy-tech</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lizy-tech</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">编程的苦与乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lizy-tech.github.io/2018/08/alg-3002000/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lizhiyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lizy-tech">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">二叉树相关算法总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-29T14:06:22+08:00">
+                2018-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构和算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构和算法</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构和算法/树/" itemprop="url" rel="index">
+                    <span itemprop="name">树</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,850 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  13 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近新整了一下hexo博客，然后就总想写点什么，思前想后最终决定把以前的知识总结总结。上一篇罗列了一下树的相关概念，这一篇起开始整点干货了。<br>由于现在主要写java，所以本文的算法实现都是java版本的</p>
+<h2 id="二叉树结点的定义"><a href="#二叉树结点的定义" class="headerlink" title="二叉树结点的定义"></a>二叉树结点的定义</h2><p>采用单向链表的的形式，只从根节点指向孩子节点，不保存父节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class BinaryTree&lt;Value extends Comparable&lt;Value&gt;&gt; &#123;</span><br><span class="line">    class Node&#123;</span><br><span class="line">        private Value val;</span><br><span class="line">        private Node lchild;</span><br><span class="line">        private Node rchild;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="二叉树的创建"><a href="#二叉树的创建" class="headerlink" title="二叉树的创建"></a>二叉树的创建</h2><p>普通的二叉树似乎没有什么实际应用场景，这里选用的二叉排序树来构建，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 创建二叉排序树</span><br><span class="line"> * 二叉排序树：左结点值全部小于根结点值，右结点值全部大于根结点值</span><br><span class="line"> * @return 根节点</span><br><span class="line"> */</span><br><span class="line">public Node createTree(Value[] vals, int n) &#123;</span><br><span class="line">    int flag;//判断插入结点是其父结点左孩子还是右孩子，0-左孩子，1-右孩子</span><br><span class="line">    Node root,p,q;</span><br><span class="line">    root = new Node();</span><br><span class="line">    root.val = vals[0];</span><br><span class="line">    for (int i = 1; i &lt; n; i++) &#123;</span><br><span class="line">        p = root;</span><br><span class="line">        while (true) &#123;</span><br><span class="line">            if (vals[i].compareTo(p.val) &lt; 0) &#123;</span><br><span class="line">                if (p.lchild != null) &#123;</span><br><span class="line">                    p = p.lchild;</span><br><span class="line">                    flag = 0;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    flag = 0;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                if (p.rchild != null) &#123;</span><br><span class="line">                    p = p.rchild;</span><br><span class="line">                    flag = 1;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    flag = 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        q = new Node();</span><br><span class="line">        q.val = vals[i];</span><br><span class="line">        if (flag == 0) &#123;</span><br><span class="line">            p.lchild = q;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            p.rchild = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h2><h3 id="先序遍历"><a href="#先序遍历" class="headerlink" title="先序遍历"></a>先序遍历</h3><p>先序遍历二叉树的过程：<br>（1） 访问根节点<br>（2） 先序遍历左子树<br>（3） 先序遍历右子树</p>
+<h4 id="递归实现-先序遍历"><a href="#递归实现-先序遍历" class="headerlink" title="递归实现-先序遍历"></a>递归实现-先序遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//先序遍历的递归实现</span><br><span class="line">public void preOrderRecursion(Node root) &#123;</span><br><span class="line">    if (root != null) &#123;</span><br><span class="line">        System.out.println(root.val);</span><br><span class="line">        preOrderRecursion(root.lchild);</span><br><span class="line">        preOrderRecursion(root.rchild);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="非递归实现-先序遍历"><a href="#非递归实现-先序遍历" class="headerlink" title="非递归实现-先序遍历"></a>非递归实现-先序遍历</h4><p>实现原理：先将根结点进栈，在栈不为空的情况下，循环：栈顶元素p出栈，访问p,若p的有孩子不为空，将右孩子结点进栈，若左孩子结点不为空，将左孩子结点进栈。实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//先序遍历的非递归实现</span><br><span class="line">public void preOrder(Node root) &#123;</span><br><span class="line">    Stack&lt;Node&gt; stack = new Stack&lt;&gt;();</span><br><span class="line">    if (root != null) &#123;</span><br><span class="line">        stack.push(root);</span><br><span class="line">    &#125;</span><br><span class="line">    while (!stack.empty()) &#123;</span><br><span class="line">        Node p = stack.pop();</span><br><span class="line">        System.out.println(p.val);</span><br><span class="line">        if (p.rchild != null) &#123;</span><br><span class="line">            stack.push(p.rchild);</span><br><span class="line">        &#125;</span><br><span class="line">        if (p.lchild != null) &#123;</span><br><span class="line">            stack.push(p.lchild);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="中序遍历"><a href="#中序遍历" class="headerlink" title="中序遍历"></a>中序遍历</h3><p>中序遍历二叉树的过程：<br>（1） 中序遍历左子树<br>（2） 访问根节点<br>（3） 中序遍历右子树</p>
+<h4 id="递归实现-中序遍历"><a href="#递归实现-中序遍历" class="headerlink" title="递归实现-中序遍历"></a>递归实现-中序遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//中序遍历的递归实现</span><br><span class="line">public void inOrderRecursion(Node root) &#123;</span><br><span class="line">    if (root != null) &#123;</span><br><span class="line">        preOrderRecursion(root.lchild);</span><br><span class="line">        System.out.println(root.val);</span><br><span class="line">        preOrderRecursion(root.rchild);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="非递归实现-中序遍历"><a href="#非递归实现-中序遍历" class="headerlink" title="非递归实现-中序遍历"></a>非递归实现-中序遍历</h4><p>实现原理：对于任一结点P，若其左孩子不为空，则将P入栈并将P指向P的左孩子结点，然后对当前结点P再进行相同的处理；若其左孩子为空，则取栈顶元素并进行出栈操作，访问该栈顶结点，然后将当前的P置为栈顶结点的右孩子；直到P为NULL并且栈为空则遍历结束。算法实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//中序遍历的非递归实现</span><br><span class="line">public void inOrder(Node root) &#123;</span><br><span class="line">    Stack&lt;Node&gt; stack = new Stack&lt;&gt;();</span><br><span class="line">    Node p = root;</span><br><span class="line">    while (p != null || !stack.isEmpty()) &#123;</span><br><span class="line">        while (p != null) &#123;</span><br><span class="line">            stack.push(p);</span><br><span class="line">            p = p.lchild;</span><br><span class="line">        &#125;</span><br><span class="line">        if (!stack.isEmpty()) &#123;</span><br><span class="line">            p = stack.peek();</span><br><span class="line">            System.out.println(p.val);</span><br><span class="line">            stack.pop();</span><br><span class="line">            p = p.rchild;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="后序遍历"><a href="#后序遍历" class="headerlink" title="后序遍历"></a>后序遍历</h3><p>后序遍历的过程：<br>（1） 后序遍历左子树<br>（2） 后序遍历右子树<br>（3） 访问根结点</p>
+<h4 id="递归实现-后序遍历"><a href="#递归实现-后序遍历" class="headerlink" title="递归实现-后序遍历"></a>递归实现-后序遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//后序遍历的递归实现</span><br><span class="line">public void postOrderRecursion(Node root) &#123;</span><br><span class="line">    if (root != null) &#123;</span><br><span class="line">        preOrderRecursion(root.lchild);</span><br><span class="line">        preOrderRecursion(root.rchild);</span><br><span class="line">        System.out.println(root.val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="非递归实现-后序遍历"><a href="#非递归实现-后序遍历" class="headerlink" title="非递归实现-后序遍历"></a>非递归实现-后序遍历</h4><p>后序遍历的非递归实现是三种遍历方式中最难的一种。因为在后序遍历中，要保证左孩子和右孩子都已被访问并且左孩子在右孩子前访问才能访问根结点，下面介绍两种实现原理。<br><strong>实现原理（1）</strong>：对于任一结点P，将其入栈，然后沿其左子树一直往下搜索，直到搜索到没有左孩子的结点，此时该结点出现在栈顶，接下来按照相同的规则对其右子树进行相同的处理，当访问完其右孩子时，该结点又出现在栈顶，此时可以将其出栈并访问。这样就保证了正确的访问顺序。可以看出，在这个过程中，每个结点都两次出现在栈顶，只有在第二次出现在栈顶时，才能访问它。可以使用一个零时结点tmp保存刚刚访问的结点，如果p.rchild == tmp说明p的左右子树均已被访问，则可以访问p了。算法实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">//后序遍历的非递归实现</span><br><span class="line">public void postOrder(Node root) &#123;</span><br><span class="line">    Stack&lt;Node&gt; stack = new Stack&lt;&gt;();</span><br><span class="line">    Node p = root;</span><br><span class="line">    Node tmp = null;</span><br><span class="line">    if (root != null) &#123;</span><br><span class="line">        while (p != null || !stack.isEmpty()) &#123;</span><br><span class="line">            while (p != null) &#123;</span><br><span class="line">                stack.push(p);</span><br><span class="line">                p = p.lchild;</span><br><span class="line">            &#125;</span><br><span class="line">            if (!stack.isEmpty()) &#123;</span><br><span class="line">                p = stack.peek();</span><br><span class="line">                if (p.rchild == tmp) &#123;</span><br><span class="line">                    System.out.println(p);</span><br><span class="line">                    stack.pop();</span><br><span class="line">                    tmp = p;</span><br><span class="line">                    p = null;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    p = p.rchild;</span><br><span class="line">                &#125; </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>实现原理（2)</strong>:要保证根结点在左孩子和右孩子访问之后才能访问，因此对于任一结点P，先将其入栈。如果P不存在左孩子和右孩子，则可以直接访问它；或者P存在左孩子或者右孩子，但是其左孩子和右孩子都已被访问过了，则同样可以直接访问该结点。若非上述两种情况，则将P的右孩子和左孩子依次入栈，这样就保证了每次取栈顶元素的时候，左孩子在右孩子前面被访问，左孩子和右孩子都在根结点前面被访问。算法实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">//后序遍历的非递归实现2</span><br><span class="line">public void postOrder2(Node root) &#123;</span><br><span class="line">    Stack&lt;Node&gt; stack = new Stack&lt;&gt;();</span><br><span class="line">    Node cur;</span><br><span class="line">    Node p = null;</span><br><span class="line">    stack.push(root);</span><br><span class="line">    while (!stack.isEmpty()) &#123;</span><br><span class="line">        cur = stack.peek();</span><br><span class="line">        if ((cur.lchild == null &amp;&amp; cur.rchild == null) ||</span><br><span class="line">                (p != null &amp;&amp; (p == cur.lchild || p == cur.rchild))) &#123;</span><br><span class="line">            System.out.println(cur.val);</span><br><span class="line">            stack.pop();</span><br><span class="line">            p = cur;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            if (cur.rchild != null) &#123;</span><br><span class="line">                stack.push(cur.rchild);</span><br><span class="line">            &#125;</span><br><span class="line">            if (cur.lchild != null) &#123;</span><br><span class="line">                stack.push(cur.lchild);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="层次遍历"><a href="#层次遍历" class="headerlink" title="层次遍历"></a>层次遍历</h3><p>层次遍历的过程：对同一层的结点按照从左到右，不同层结点按照从上到下的顺序访问。使用一个队列，先将根节点入队，在队列不为空的时候，循环：出队一个结点p，访问p，若p有左孩子，将左孩子结点入队，若p有右孩子，将右孩子结点入队。算法实现如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//层次遍历</span><br><span class="line">public void levelOrder(Node root) &#123;</span><br><span class="line">    LinkedList&lt;Node&gt; queue = new LinkedList&lt;&gt;();</span><br><span class="line">    queue.addLast(root);</span><br><span class="line">    while (!queue.isEmpty()) &#123;</span><br><span class="line">        Node p = queue.pop();</span><br><span class="line">        System.out.println(p.val);</span><br><span class="line">        if (p.lchild != null) &#123;</span><br><span class="line">            queue.addLast(p.lchild);</span><br><span class="line">        &#125;</span><br><span class="line">        if (p.rchild != null) &#123;</span><br><span class="line">            queue.addLast(p.rchild);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="二叉树的最大宽度"><a href="#二叉树的最大宽度" class="headerlink" title="二叉树的最大宽度"></a>二叉树的最大宽度</h2><p>二叉树宽度的定义为每一层上结点的数目，最大宽度的实现同层次遍历，使队列中每次存储一层的结点，算法实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">//二叉树的最大宽度</span><br><span class="line">public int maxWidth(Node root) &#123;</span><br><span class="line">    if(root == null)</span><br><span class="line">        return 0;</span><br><span class="line">    int result = 0;</span><br><span class="line">    LinkedList&lt;Node&gt; queue = new LinkedList&lt;&gt;();</span><br><span class="line">    queue.addLast(root);</span><br><span class="line">    while (!queue.isEmpty()) &#123;</span><br><span class="line">        int count = queue.size();</span><br><span class="line">        result = Math.max(result, count);</span><br><span class="line">        while (count&gt;0) &#123;</span><br><span class="line">            Node cur = queue.poll();</span><br><span class="line">            if (cur.lchild != null) &#123;</span><br><span class="line">                queue.addLast(cur.lchild);</span><br><span class="line">            &#125;</span><br><span class="line">            if (cur.rchild != null) &#123;</span><br><span class="line">                queue.addLast(cur.rchild);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="二叉树的深度"><a href="#二叉树的深度" class="headerlink" title="二叉树的深度"></a>二叉树的深度</h2><p>递归实现，分别求出左子树的深度、右子树的深度，两个深度的较大值+1即可。算法实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int getMaxDepth(Node root) &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        int left = getMaxDepth(root.lchild);</span><br><span class="line">        int right = getMaxDepth(root.rchild);</span><br><span class="line">        return 1 + Math.max(left, right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="二叉树叶子结点数目"><a href="#二叉树叶子结点数目" class="headerlink" title="二叉树叶子结点数目"></a>二叉树叶子结点数目</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public int getCountLeaf(Node root) &#123;</span><br><span class="line">    int count;</span><br><span class="line">    if(root == null)</span><br><span class="line">        count = 0;</span><br><span class="line">    else if(root.lchild == null &amp;&amp; root.rchild == null)</span><br><span class="line">        count = 1;</span><br><span class="line">    else</span><br><span class="line">        count = getCountLeaf(root.rchild) + getCountLeaf(root.lchild);</span><br><span class="line">    return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二叉树的根结点到某结点的路径"><a href="#二叉树的根结点到某结点的路径" class="headerlink" title="二叉树的根结点到某结点的路径"></a>二叉树的根结点到某结点的路径</h2><p>使用一个链表来存储路径，采用深度优先遍历，判断当前结点是否是查找的结点，如果是，放入链表，否则查找当前结点的左结点和右结点，如果左右结点都不是，择将当前结点从链表中删去；算法实现如下：<br>这里也可以使用非递归的算法，主要是在遍历的时候，增加一个栈来保存遍历的结点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">//判断树中是否存在某个结点</span><br><span class="line">public boolean hasNode(Node root, Node pNode) &#123;</span><br><span class="line">    if (root == pNode) &#123;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    boolean flag = false;</span><br><span class="line">    if (root.lchild != null) &#123;</span><br><span class="line">        flag = hasNode(root.lchild,pNode);</span><br><span class="line">    &#125;</span><br><span class="line">    if (root.rchild != null) &#123;</span><br><span class="line">        flag = hasNode(root.rchild, pNode);</span><br><span class="line">    &#125;</span><br><span class="line">    return flag;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//根结点到指定结点的路径</span><br><span class="line">public boolean getPath(Node root, Node pNode,LinkedList&lt;Node&gt; path) &#123;</span><br><span class="line">    path.push(root);</span><br><span class="line">    if (root == pNode) &#123;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    if (hasNode(root, pNode) == false) &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;        </span><br><span class="line">    boolean found = false;</span><br><span class="line">    if (root.lchild != null) &#123;</span><br><span class="line">        found = getPath(root.lchild, pNode, path);</span><br><span class="line">    &#125;</span><br><span class="line">    if (!found &amp;&amp; root.rchild != null) &#123;</span><br><span class="line">        found = getPath(root.rchild, pNode, path);</span><br><span class="line">    &#125;</span><br><span class="line">    if (!found) &#123;</span><br><span class="line">        path.remove(path.size() - 1);</span><br><span class="line">    &#125;</span><br><span class="line">    return found;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="二叉树中两个结点最近的公共父节点"><a href="#二叉树中两个结点最近的公共父节点" class="headerlink" title="二叉树中两个结点最近的公共父节点"></a>二叉树中两个结点最近的公共父节点</h2><p>这是面试中比较经典的一个问题，转化一下就是：求两个链表的第一个公共点。<br>方法：求链表A的长度lenA,和链表B的长度lenB，让长的链表先走|lenA-lenB|个结点，然后两个链表在一次一个结点走，当结点相同时就是第一个公共点。<br>如果树的结构中有指向父节点的指针，可以直接得到两个结点的到根节点的路径，然后就是邱两个链表的第一个公共点的问题了。<br>如果树的结构中没有指向父节点的指针，可以用上节的getPath得到根节点的路径，然后遍历两条路径，当路径中某个结点A的下一个结点不同时，A就是所求的公共父结点。<br>另一种方法：递归的方法，从下往上，如果找到结点A和B，就把它传给它的父结点，如果向下到头都没有找到，那么返回NULL。如果当前结点左右子树都返回非NULL，那么当前结点就是最近公共父结点。算法实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//二叉树中两个结点最近的公共父节点</span><br><span class="line">public Node findLCA(Node root, Node A, Node B) &#123;</span><br><span class="line">    if(root == null)</span><br><span class="line">        return null;</span><br><span class="line">    if(root == A || root == B)</span><br><span class="line">        return root;</span><br><span class="line">    Node L = findLCA(root.lchild, A, B);</span><br><span class="line">    Node R = findLCA(root.rchild, A, B);</span><br><span class="line">    if (L != null &amp;&amp; R != null) &#123;</span><br><span class="line">        return root;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return L != null ? L : R;</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="翻转二叉树"><a href="#翻转二叉树" class="headerlink" title="翻转二叉树"></a>翻转二叉树</h2><p>这个问题曾今还是IT圈的火热事件，15年，Homebrew的作者Max Howell在twitter上发表了如下一内容：</p>
+<blockquote>
+<p>Google: 90% of our engineers use the software you wrote (Homebrew), but you can’t invert a binary tree on a whiteboard so fuck off.</p>
+</blockquote>
+<p>递归实现算法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//二叉树的翻转</span><br><span class="line">public Node invertTree(Node root) &#123;</span><br><span class="line">    if(root == null)</span><br><span class="line">        return root;</span><br><span class="line">    Node temp = root.lchild;</span><br><span class="line">    root.lchild = root.rchild;</span><br><span class="line">    root.rchild = temp;</span><br><span class="line">    invertTree(root.lchild);</span><br><span class="line">    invertTree(root.rchild);</span><br><span class="line">    return root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/二叉树/" rel="tag"># 二叉树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/1314/" rel="next" title="程序调试">
+                <i class="fa fa-chevron-left"></i> 程序调试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/alg-3003000/" rel="prev" title="平衡二叉树相关算法">
+                平衡二叉树相关算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lizhiyong</p>
+              <p class="site-description motion-element" itemprop="description">菜鸟的涅槃梦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树结点的定义"><span class="nav-number">1.</span> <span class="nav-text">二叉树结点的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的创建"><span class="nav-number">2.</span> <span class="nav-text">二叉树的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的遍历"><span class="nav-number">3.</span> <span class="nav-text">二叉树的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#先序遍历"><span class="nav-number">3.1.</span> <span class="nav-text">先序遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#递归实现-先序遍历"><span class="nav-number">3.1.1.</span> <span class="nav-text">递归实现-先序遍历</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非递归实现-先序遍历"><span class="nav-number">3.1.2.</span> <span class="nav-text">非递归实现-先序遍历</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中序遍历"><span class="nav-number">3.2.</span> <span class="nav-text">中序遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#递归实现-中序遍历"><span class="nav-number">3.2.1.</span> <span class="nav-text">递归实现-中序遍历</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非递归实现-中序遍历"><span class="nav-number">3.2.2.</span> <span class="nav-text">非递归实现-中序遍历</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后序遍历"><span class="nav-number">3.3.</span> <span class="nav-text">后序遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#递归实现-后序遍历"><span class="nav-number">3.3.1.</span> <span class="nav-text">递归实现-后序遍历</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非递归实现-后序遍历"><span class="nav-number">3.3.2.</span> <span class="nav-text">非递归实现-后序遍历</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#层次遍历"><span class="nav-number">3.4.</span> <span class="nav-text">层次遍历</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的最大宽度"><span class="nav-number">4.</span> <span class="nav-text">二叉树的最大宽度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的深度"><span class="nav-number">5.</span> <span class="nav-text">二叉树的深度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树叶子结点数目"><span class="nav-number">6.</span> <span class="nav-text">二叉树叶子结点数目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的根结点到某结点的路径"><span class="nav-number">7.</span> <span class="nav-text">二叉树的根结点到某结点的路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树中两个结点最近的公共父节点"><span class="nav-number">8.</span> <span class="nav-text">二叉树中两个结点最近的公共父节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#翻转二叉树"><span class="nav-number">9.</span> <span class="nav-text">翻转二叉树</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lizhiyong</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">11.3k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

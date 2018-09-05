@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="平衡二叉树," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="二叉排序树在插入、删除、查找等基本操作的平均时间为O(\(log_2n\))，但在某些情况下，这些运算会增至O(n)。因此研究了一些平衡二叉树，平衡二叉树（Balanced Binary Tree）又被称为AVL树，要求每个结点的左右字数的高度至多相差1。平衡二叉树大部分操作和二叉排序树类似，主要不同在于插入删除的时候平衡二叉树的平衡可能被改变，并且只有从那些插入点到根结点的路径上的结点的平衡性可">
+<meta name="keywords" content="平衡二叉树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="平衡二叉树相关算法">
+<meta property="og:url" content="https://lizy-tech.github.io/2018/09/alg-3003000/index.html">
+<meta property="og:site_name" content="lizy-tech">
+<meta property="og:description" content="二叉排序树在插入、删除、查找等基本操作的平均时间为O(\(log_2n\))，但在某些情况下，这些运算会增至O(n)。因此研究了一些平衡二叉树，平衡二叉树（Balanced Binary Tree）又被称为AVL树，要求每个结点的左右字数的高度至多相差1。平衡二叉树大部分操作和二叉排序树类似，主要不同在于插入删除的时候平衡二叉树的平衡可能被改变，并且只有从那些插入点到根结点的路径上的结点的平衡性可">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3003000/LL.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3003000/RR.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3003000/LR.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3003000/RL.png">
+<meta property="og:updated_time" content="2018-09-04T11:07:05.238Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="平衡二叉树相关算法">
+<meta name="twitter:description" content="二叉排序树在插入、删除、查找等基本操作的平均时间为O(\(log_2n\))，但在某些情况下，这些运算会增至O(n)。因此研究了一些平衡二叉树，平衡二叉树（Balanced Binary Tree）又被称为AVL树，要求每个结点的左右字数的高度至多相差1。平衡二叉树大部分操作和二叉排序树类似，主要不同在于插入删除的时候平衡二叉树的平衡可能被改变，并且只有从那些插入点到根结点的路径上的结点的平衡性可">
+<meta name="twitter:image" content="https://lizy-tech.github.io/2018/09/alg-3003000/LL.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://lizy-tech.github.io/2018/09/alg-3003000/"/>
+
+
+
+
+
+  <title>平衡二叉树相关算法 | lizy-tech</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lizy-tech</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">编程的苦与乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lizy-tech.github.io/2018/09/alg-3003000/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lizhiyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lizy-tech">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">平衡二叉树相关算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-03T14:36:06+08:00">
+                2018-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构和算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构和算法</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构和算法/树/" itemprop="url" rel="index">
+                    <span itemprop="name">树</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,890 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>二叉排序树在插入、删除、查找等基本操作的平均时间为O(\(log_2n\))，但在某些情况下，这些运算会增至O(n)。因此研究了一些平衡二叉树，<strong>平衡二叉树</strong>（Balanced Binary Tree）又被称为AVL树，要求每个结点的左右字数的高度至多相差1。平衡二叉树大部分操作和二叉排序树类似，主要不同在于插入删除的时候平衡二叉树的平衡可能被改变，并且只有从那些插入点到根结点的路径上的结点的平衡性可能被改变，因为只有这些结点的子树可能变化。</p>
+<h2 id="平衡二叉树插入结点的调整方法"><a href="#平衡二叉树插入结点的调整方法" class="headerlink" title="平衡二叉树插入结点的调整方法"></a>平衡二叉树插入结点的调整方法</h2><p>失去平衡的最小子树是指以离插入结点最近，且平衡因子绝对值大于1的结点作为根的子树。假设用A表示失去平衡的最小树的根节点，则调整的过程归纳如下：</p>
+<h3 id="LL型调整"><a href="#LL型调整" class="headerlink" title="LL型调整"></a>LL型调整</h3><p>在A结点的左孩子的左子树上插入结点，导致A结点的平衡因子由1变2。调整过程如下：<img src="/2018/09/alg-3003000/LL.png" title="图1 LL调整"></p>
+<h3 id="RR型调整"><a href="#RR型调整" class="headerlink" title="RR型调整"></a>RR型调整</h3><p>LL型调整和RR型调整关于A结点镜像对称，在A结点的右孩子的右子树上插入结点，导致A结点的平衡因子由1变2。调整过程如下：<img src="/2018/09/alg-3003000/RR.png" title="图2 RR调整"></p>
+<h3 id="LR型调整"><a href="#LR型调整" class="headerlink" title="LR型调整"></a>LR型调整</h3><p>在A结点的左孩子的右结点上插入结点，导致A结点的平衡因子由1变2。调整过程需要经过两次旋转，先左旋再右旋。具体如下图：<img src="/2018/09/alg-3003000/LR.png" title="图3 LR调整"></p>
+<h3 id="RL型调整"><a href="#RL型调整" class="headerlink" title="RL型调整"></a>RL型调整</h3><p>在A结点的右孩子的左结点上插入结点，导致A结点的平衡因子由1变2。调整过程需要经过两次旋转，先右旋再左旋。该过程与LR型调整成镜像对称。具体调整过程如下图：<img src="/2018/09/alg-3003000/RL.png" title="图4 RL调整"></p>
+<h2 id="插入和删除的代码实现"><a href="#插入和删除的代码实现" class="headerlink" title="插入和删除的代码实现"></a>插入和删除的代码实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br></pre></td><td class="code"><pre><span class="line">public class AVLTree&lt;Value extends Comparable&lt;Value&gt;&gt; &#123;</span><br><span class="line">    private Node&lt;Value&gt; root;</span><br><span class="line">    private class Node&lt;Value&gt;&#123;</span><br><span class="line">        Node&lt;Value&gt; left;</span><br><span class="line">        Node&lt;Value&gt; right;</span><br><span class="line">        Value val;</span><br><span class="line">        int height;//高度</span><br><span class="line"></span><br><span class="line">        public Node(Node&lt;Value&gt; left,Node&lt;Value&gt; right,Value data)&#123;</span><br><span class="line">            this.left = left;</span><br><span class="line">            this.right = right;</span><br><span class="line">            this.val = data;</span><br><span class="line">            this.height = 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Node&lt;Value&gt; insert(Value data) &#123;</span><br><span class="line">        return root = insert(data, root);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 递归过程插入，先插入再调整</span><br><span class="line">     */</span><br><span class="line">    public Node&lt;Value&gt; insert(Value data, Node&lt;Value&gt; node) &#123;</span><br><span class="line">        if (node == null) &#123;</span><br><span class="line">            return new Node&lt;&gt;(null, null, data);</span><br><span class="line">        &#125;</span><br><span class="line">        int compareResult = data.compareTo(node.val);</span><br><span class="line">        if (compareResult &gt; 0) &#123;//插入node的右子树中</span><br><span class="line">            node.right = insert(data, node.right);</span><br><span class="line">            //递归回调时判断是否平衡</span><br><span class="line">            if (getHeight(node.right) - getHeight(node.left) == 2) &#123;//需要旋转的条件</span><br><span class="line">                int compareResult2 = data.compareTo(node.right.val);</span><br><span class="line">                if (compareResult2 &gt; 0) &#123;//data插入node的右子树中了，符合RR型调整</span><br><span class="line">                    node = rotateSingleLeft(node);</span><br><span class="line">                &#125; else &#123;//data插入node的右子树的左孩子结点中，符合RL型调整</span><br><span class="line">                    node = rotateRightAndLeft(node);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (compareResult &lt; 0) &#123;//插入node的左子树</span><br><span class="line">            node.left = insert(data, node.left);</span><br><span class="line">            if (getHeight(node.left ) - getHeight(node.right)== 2) &#123;</span><br><span class="line">                int compareResult2 = data.compareTo(node.left.val);</span><br><span class="line">                if (compareResult2 &lt; 0) &#123;</span><br><span class="line">                    node = rotateSingleRight(node);</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    node = rotateLeftAndRight(node);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;</span><br><span class="line">        return node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //RR型调整，左旋</span><br><span class="line">    private Node&lt;Value&gt; rotateSingleLeft(Node&lt;Value&gt; node) &#123;</span><br><span class="line">        Node&lt;Value&gt; rightNode = node.right;</span><br><span class="line">        node.right = rightNode.left;</span><br><span class="line">        rightNode.left = node;</span><br><span class="line">        node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;</span><br><span class="line">        rightNode.height = Math.max(node.height, getHeight(rightNode.right)) + 1;</span><br><span class="line">        return rightNode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //LL型调整，右旋</span><br><span class="line">    private Node&lt;Value&gt; rotateSingleRight(Node&lt;Value&gt; node) &#123;</span><br><span class="line">        Node&lt;Value&gt; leftNode = node.left;</span><br><span class="line">        node.left = leftNode.right;</span><br><span class="line">        leftNode.right = node;</span><br><span class="line">        node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;</span><br><span class="line">        leftNode.height = Math.max(getHeight(leftNode.left), node.height) + 1;</span><br><span class="line">        return leftNode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //RL型调整，先右旋再左旋</span><br><span class="line">    private Node&lt;Value&gt; rotateRightAndLeft(Node&lt;Value&gt; node) &#123;</span><br><span class="line">        node.right = rotateSingleRight(node.right);</span><br><span class="line">        node = rotateSingleLeft(node);</span><br><span class="line">        return node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //LR型调整，先左旋再右旋</span><br><span class="line">    private Node&lt;Value&gt; rotateLeftAndRight(Node&lt;Value&gt; node) &#123;</span><br><span class="line">        node.left = rotateSingleLeft(node.left);</span><br><span class="line">        node = rotateSingleRight(node);</span><br><span class="line">        return node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private int getHeight(Node&lt;Value&gt; node) &#123;</span><br><span class="line">        return node == null ? 0 : node.height;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Node&lt;Value&gt; remove(Value data) &#123;</span><br><span class="line">        return root = remove(data, root);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Node&lt;Value&gt; remove(Value data, Node&lt;Value&gt; node) &#123;</span><br><span class="line">        if (node == null) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        int compareResult = data.compareTo(node.val);</span><br><span class="line">        if(compareResult == 0)&#123;//node为要删除的结点</span><br><span class="line">            /**</span><br><span class="line">             * 判断node是否有子树，若无，直接删除</span><br><span class="line">             * 若有两个子树，判断node的平衡系数balance</span><br><span class="line">             *      若balance为0或者1，择将node左子树的最大值和node交换，</span><br><span class="line">             *      否则将node右子树的最小值和node交换</span><br><span class="line">             * 交换结点之后删除node结点，判断删除之后结点的父节点是否平衡，</span><br><span class="line">             * 如果不平衡进行节点旋转，旋转之后返回delete节点的父节点进行回溯</span><br><span class="line">             */</span><br><span class="line">            if (node.left != null &amp;&amp; node.right != null) &#123;</span><br><span class="line">                int balance = getHeight(node.left) - getHeight(node.right);</span><br><span class="line">                Node&lt;Value&gt; temp = node;</span><br><span class="line">                if (balance == -1) &#123;//node与node右子树中最小值交换</span><br><span class="line">                    exchangeRightData(node, node.right);</span><br><span class="line">                &#125; else &#123;//node与node左子树中最大值交换</span><br><span class="line">                    exchangeLeftData(node, node.left);</span><br><span class="line">                &#125;</span><br><span class="line">                temp.height = Math.max(getHeight(temp.left), getHeight(temp.right)) + 1;</span><br><span class="line">                return temp;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                return node.left != null ? node.left : node.right;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else if (compareResult &gt; 0) &#123;//要删除的结点在node的右子树中</span><br><span class="line">            node.right = remove(data, node.right);</span><br><span class="line">            node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;</span><br><span class="line">            if (getHeight(node.left) - getHeight(node.right) == 2) &#123;// 进行旋转</span><br><span class="line">                Node&lt;Value&gt; leftSon = node.left;</span><br><span class="line">                // 判断是否需要进行两次右旋还是一次右旋</span><br><span class="line">                // 判断条件就是比较leftSon节点的左右子节点树高</span><br><span class="line">                if (leftSon.left.height &gt; leftSon.right.height) &#123;</span><br><span class="line">                    // 右旋一次</span><br><span class="line">                    node = rotateSingleRight(node);</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    // 两次旋转，先左旋，后右旋</span><br><span class="line">                    node = rotateLeftAndRight(node);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            return node;</span><br><span class="line">        &#125; else if (compareResult &lt; 0) &#123;//要删除的结点在node的左子树中</span><br><span class="line">            node.left = remove(data, node.left);</span><br><span class="line">            node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;</span><br><span class="line">            if (getHeight(node.right) - getHeight(node.left) == 2) &#123;</span><br><span class="line">                Node&lt;Value&gt; rightSon = node.right;</span><br><span class="line">                // 判断是否需要进行两次右旋还是一次右旋</span><br><span class="line">                // 判断条件就是比较rightSon节点的左右子节点树高</span><br><span class="line">                if (rightSon.right.height &gt; rightSon.left.height) &#123;</span><br><span class="line">                    node = rotateSingleLeft(node);</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    // 先右旋再左旋</span><br><span class="line">                    node = rotateRightAndLeft(node);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            return node;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //递归寻找left子树中的最大值</span><br><span class="line">    private Node&lt;Value&gt; exchangeLeftData(Node&lt;Value&gt; node, Node&lt;Value&gt; right) &#123;</span><br><span class="line">        if (right.right != null) &#123;</span><br><span class="line">            right.right = exchangeLeftData(node, right.right);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            node.val = right.val;</span><br><span class="line">            return right.left;</span><br><span class="line">        &#125;</span><br><span class="line">        right.height = Math.max(getHeight(right.left), getHeight(right.right)) + 1;</span><br><span class="line">        right.height = Math.max(getHeight(right.left), getHeight(right.right)) + 1;</span><br><span class="line">        // 回溯判断left是否平衡,如果不平衡则进行左旋操作。</span><br><span class="line">        int isbanlance = getHeight(right.left) - getHeight(right.right);</span><br><span class="line">        if (isbanlance == 2) &#123;// 进行旋转</span><br><span class="line">            Node&lt;Value&gt; leftSon = node.left;</span><br><span class="line">            // 判断是否需要进行两次右旋还是一次右旋</span><br><span class="line">            // 判断条件就是比较leftSon节点的左右子节点树高</span><br><span class="line">            if (leftSon.left.height &gt; leftSon.right.height) &#123;</span><br><span class="line">                // 右旋一次</span><br><span class="line">                return node = rotateSingleRight(node);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                // 两次旋转，先左旋，后右旋</span><br><span class="line">                return node = rotateLeftAndRight(node);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return right;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Node&lt;Value&gt; exchangeRightData(Node&lt;Value&gt; node, Node&lt;Value&gt; left) &#123;</span><br><span class="line">        if (left.left != null) &#123;</span><br><span class="line">            left.left = exchangeRightData(node, left.left);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            node.val = left.val;</span><br><span class="line">            // 此处已经把替换节点删除</span><br><span class="line">            return left.right;</span><br><span class="line">        &#125;</span><br><span class="line">        left.height = Math.max(getHeight(left.left), getHeight(left.right)) + 1;</span><br><span class="line">        // 回溯判断left是否平衡,如果不平衡则进行左旋操作。</span><br><span class="line">        int isbanlance = getHeight(left.left) - getHeight(left.right);</span><br><span class="line">        if (isbanlance == -2) &#123;// 进行旋转</span><br><span class="line">            Node&lt;Value&gt; rightSon = node.right;</span><br><span class="line">            // 判断是否需要进行两次右旋还是一次右旋</span><br><span class="line">            // 判断条件就是比较rightSon节点的左右子节点树高</span><br><span class="line">            if (rightSon.right.height &gt; rightSon.left.height) &#123;</span><br><span class="line">                return node = rotateSingleLeft(node);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                // 先右旋再左旋</span><br><span class="line">                return node = rotateRightAndLeft(node);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return left;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/平衡二叉树/" rel="tag"># 平衡二叉树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/alg-3002000/" rel="next" title="二叉树相关算法总结">
+                <i class="fa fa-chevron-left"></i> 二叉树相关算法总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/java-20020000/" rel="prev" title="泛型知识小结">
+                泛型知识小结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lizhiyong</p>
+              <p class="site-description motion-element" itemprop="description">菜鸟的涅槃梦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#平衡二叉树插入结点的调整方法"><span class="nav-number">1.</span> <span class="nav-text">平衡二叉树插入结点的调整方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LL型调整"><span class="nav-number">1.1.</span> <span class="nav-text">LL型调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RR型调整"><span class="nav-number">1.2.</span> <span class="nav-text">RR型调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LR型调整"><span class="nav-number">1.3.</span> <span class="nav-text">LR型调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RL型调整"><span class="nav-number">1.4.</span> <span class="nav-text">RL型调整</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入和删除的代码实现"><span class="nav-number">2.</span> <span class="nav-text">插入和删除的代码实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lizhiyong</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">11.3k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -83,16 +83,16 @@
 <meta name="keywords" content="java参数传递">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java参数传递时[值传递]还是[引用传递]">
-<meta property="og:url" content="https://lizy-tech.github.io/Java参数传递时-值传递-还是-引用传递/index.html">
+<meta property="og:url" content="https://lizy-tech.github.io/2018/08/java-20010000/index.html">
 <meta property="og:site_name" content="lizy-tech">
 <meta property="og:description" content="首先揭晓答案：Java 的参数传递，不管是是基本数据类型还是引用数据类型，都是按值传递的，没有引用传递。 运行下面的代码：12345678910111213141516171819202122232425262728public static void change(Person p,int a1) &amp;#123;    System.out.println(p);    p.setAge(12);">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://lizy-tech.github.io/Java参数传递时-值传递-还是-引用传递/java.png">
-<meta property="og:updated_time" content="2018-08-28T01:58:16.468Z">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/08/java-20010000/java.png">
+<meta property="og:updated_time" content="2018-09-04T11:07:05.228Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java参数传递时[值传递]还是[引用传递]">
 <meta name="twitter:description" content="首先揭晓答案：Java 的参数传递，不管是是基本数据类型还是引用数据类型，都是按值传递的，没有引用传递。 运行下面的代码：12345678910111213141516171819202122232425262728public static void change(Person p,int a1) &amp;#123;    System.out.println(p);    p.setAge(12);">
-<meta name="twitter:image" content="https://lizy-tech.github.io/Java参数传递时-值传递-还是-引用传递/java.png">
+<meta name="twitter:image" content="https://lizy-tech.github.io/2018/08/java-20010000/java.png">
 
 
 
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="https://lizy-tech.github.io/Java参数传递时-值传递-还是-引用传递/"/>
+  <link rel="canonical" href="https://lizy-tech.github.io/2018/08/java-20010000/"/>
 
 
 
@@ -265,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://lizy-tech.github.io/Java参数传递时-值传递-还是-引用传递/">
+    <link itemprop="mainEntityOfPage" href="https://lizy-tech.github.io/2018/08/java-20010000/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="lizhiyong">
@@ -391,7 +391,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Person@23fc625e</span><br><span class="line">1&gt;&gt;&gt;person.getAge====11</span><br><span class="line">Person@23fc625e</span><br><span class="line">2&gt;&gt;&gt;p.getAge====12</span><br><span class="line">3&gt;&gt;&gt;person.getAge====12</span><br><span class="line">a==1</span><br></pre></td></tr></table></figure>
 <p>既然Java中都是值传递，运行change()函数之后，为什么person的年龄会改变呢？</p>
 <h3 id="Java中对象的存储"><a href="#Java中对象的存储" class="headerlink" title="Java中对象的存储"></a>Java中对象的存储</h3><p>堆：存储全部的对象（所有线程共享）<br>栈：存储基础数据类型和对象的引用</p>
-<p>因此数据的存储如下：<br><img src="/Java参数传递时-值传递-还是-引用传递/java.png" title="数据在内存中的存储示意图"></p>
+<p>因此数据的存储如下：<br><img src="/2018/08/java-20010000/java.png" title="数据在内存中的存储示意图"></p>
 <p>从图中可以看出 a的值不变是因为值传递，change()函数中的a1是a的一份拷贝，<br>因为是值传递 所以p是person的一份拷贝，但是由于java的内存模型中，栈中存储的是对象的引用，<br>所以person是Person对象的引用，p拷贝拷贝的person也是Person的引用,所以运行change()函数之后，年龄会改变。</p>
 
       
@@ -423,7 +423,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/git配置多账号/" rel="next" title="git配置多账号">
+              <a href="/2018/07/git-10010000/" rel="next" title="git配置多账号">
                 <i class="fa fa-chevron-left"></i> git配置多账号
               </a>
             
@@ -433,7 +433,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/数据结构-树-基本概念/" rel="prev" title="数据结构-树(基本概念)">
+              <a href="/2018/08/alg-3001000/" rel="prev" title="数据结构-树(基本概念)">
                 数据结构-树(基本概念) <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -512,7 +512,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -523,7 +523,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -534,7 +534,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -601,7 +601,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">3.0k</span>
+    <span title="Site words total count">11.3k</span>
   
 </div>
 

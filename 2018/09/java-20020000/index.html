@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="泛型," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="java中有些知识，我们在编码中经常用到，由于常见而没有去深入了解，当与他人谈论时，却发现原来自己对此不甚了解。泛型对我来说正是这样，所以此篇主要为总结泛型的知识点。 概述java的从Java SE5开始实现了参数化类型即泛型，是代码可以应用于多种类型。 泛型的使用Java中泛型的使用主要在有：泛型类、泛型接口、泛型方法三种方式。 泛型类泛型类型用于类的定义中，被称为泛型类。通过泛型可以完成对一组">
+<meta name="keywords" content="泛型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="泛型知识小结">
+<meta property="og:url" content="https://lizy-tech.github.io/2018/09/java-20020000/index.html">
+<meta property="og:site_name" content="lizy-tech">
+<meta property="og:description" content="java中有些知识，我们在编码中经常用到，由于常见而没有去深入了解，当与他人谈论时，却发现原来自己对此不甚了解。泛型对我来说正是这样，所以此篇主要为总结泛型的知识点。 概述java的从Java SE5开始实现了参数化类型即泛型，是代码可以应用于多种类型。 泛型的使用Java中泛型的使用主要在有：泛型类、泛型接口、泛型方法三种方式。 泛型类泛型类型用于类的定义中，被称为泛型类。通过泛型可以完成对一组">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-05T01:13:27.168Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="泛型知识小结">
+<meta name="twitter:description" content="java中有些知识，我们在编码中经常用到，由于常见而没有去深入了解，当与他人谈论时，却发现原来自己对此不甚了解。泛型对我来说正是这样，所以此篇主要为总结泛型的知识点。 概述java的从Java SE5开始实现了参数化类型即泛型，是代码可以应用于多种类型。 泛型的使用Java中泛型的使用主要在有：泛型类、泛型接口、泛型方法三种方式。 泛型类泛型类型用于类的定义中，被称为泛型类。通过泛型可以完成对一组">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://lizy-tech.github.io/2018/09/java-20020000/"/>
+
+
+
+
+
+  <title>泛型知识小结 | lizy-tech</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lizy-tech</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">编程的苦与乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lizy-tech.github.io/2018/09/java-20020000/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lizhiyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lizy-tech">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">泛型知识小结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-04T19:16:58+08:00">
+                2018-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3,100 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>java中有些知识，我们在编码中经常用到，由于常见而没有去深入了解，当与他人谈论时，却发现原来自己对此不甚了解。泛型对我来说正是这样，所以此篇主要为总结泛型的知识点。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>java的从Java SE5开始实现了<em>参数化类型</em>即泛型，是代码可以应用于多种类型。</p>
+<h2 id="泛型的使用"><a href="#泛型的使用" class="headerlink" title="泛型的使用"></a>泛型的使用</h2><p>Java中泛型的使用主要在有：泛型类、泛型接口、泛型方法三种方式。</p>
+<h3 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h3><p>泛型类型用于类的定义中，被称为泛型类。通过泛型可以完成对一组类的操作对外开放相同的接口。典型的如Java类库中的各种容器：List，Set，Map等。基本写法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class 类名称 &lt;泛型标识&gt;&#123;</span><br><span class="line">  private 泛型标识 value; </span><br><span class="line">  .....</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="泛型接口"><a href="#泛型接口" class="headerlink" title="泛型接口"></a>泛型接口</h3><p>泛型接口与泛型类相似，只能使用在接口类上，通常使用在各种生成器中，负责对象的创建。如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface Generator&lt;T&gt;&#123;</span><br><span class="line">	T next();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h3><p>定义泛型方法，只需将泛型参数列表置于返回值之前即可，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T&gt; void function(T x)&#123;</span><br><span class="line">	······</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在编码的过程中，如果使用泛型方法能取代将整个类泛型化，就应该只使用泛型方法。</p>
+<h2 id="java中的泛型原理"><a href="#java中的泛型原理" class="headerlink" title="java中的泛型原理"></a>java中的泛型原理</h2><p>Java泛型是使用擦除来实现的，这就意味着当我们在使用泛型时，任何具体的类型信息都被擦出了，唯一知道的就是在使用的对象。因此List<integer>和List<string>在运行时事实上是相同的类型，两种形式度将被擦除成它们的“原生”类型，即List。</string></integer></p>
+<h3 id="类型擦除后保留的原始类型"><a href="#类型擦除后保留的原始类型" class="headerlink" title="类型擦除后保留的原始类型"></a>类型擦除后保留的原始类型</h3><p>原始类型（raw type）就是擦除去了泛型信息，最后在字节码中的类型变量的真正类型。无论何时定义一个泛型类型，相应的原始类型都会被自动地提供。类型变量被擦除（crased），并使用其限定类型（无限定的变量用Object）替换。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class A&lt;T&gt; &#123;  </span><br><span class="line">    private T value;  </span><br><span class="line">    public T getValue() &#123;  </span><br><span class="line">        return value;  </span><br><span class="line">    &#125;  </span><br><span class="line">    public void setValue(T  value) &#123;  </span><br><span class="line">        this.value = value;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br><span class="line">//原始类型为：</span><br><span class="line">class A &#123;  </span><br><span class="line">    private Object value;  </span><br><span class="line">    public Object getValue() &#123;  </span><br><span class="line">        return value;  </span><br><span class="line">    &#125;  </span><br><span class="line">    public void setValue(Object  value) &#123;  </span><br><span class="line">        this.value = value;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>public class A<t extends="" comparable&="" serializable=""></t></p>
+</blockquote>
+<p>原始类型为Comparable</p>
+<h3 id="类型擦除引起的问题及解决方法"><a href="#类型擦除引起的问题及解决方法" class="headerlink" title="类型擦除引起的问题及解决方法"></a>类型擦除引起的问题及解决方法</h3><p>Java不能实现真正的泛型，只能使用类型擦除来实现伪泛型，这样虽然不会有类型膨胀的问题，但是也引起了许多新的问题。所以，Sun对这些问题作出了许多限制，避免我们犯各种错误。</p>
+<h4 id="先检查，再编译"><a href="#先检查，再编译" class="headerlink" title="先检查，再编译"></a>先检查，再编译</h4><p>虽然List<string> 和List<integer>在编译之后的类型都是List，但是我们在List<string>中add一个非String变量，还是会报错，这是由于java编译器是通过先检查代码中泛型的类型，然后再进行类型擦除，再进行编译的。<br>同样，既然都被替换为原始类型，那么为什么我们在获取的时候，需要进行强制类型转换呢？如下ArrayList的get方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public E get(int index) &#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line">    return elementData(index);</span><br><span class="line">&#125;</span><br><span class="line">E elementData(int index) &#123;</span><br><span class="line">   return (E) elementData[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></string></integer></string></p>
+<p>一个简单的测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class Test &#123;  </span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">	ArrayList&lt;Date&gt; list=new ArrayList&lt;Date&gt;();</span><br><span class="line">	list.add(new Date()); </span><br><span class="line">	Date myDate=list.get(0); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后反编了下字节码，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class Test &#123;</span><br><span class="line">  public Test();</span><br><span class="line">    Code:</span><br><span class="line">       0: aload_0</span><br><span class="line">       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">       4: return</span><br><span class="line"></span><br><span class="line">  public static void main(java.lang.String[]);</span><br><span class="line">    Code:</span><br><span class="line">       0: new           #2                  // class java/util/ArrayList</span><br><span class="line">       3: dup</span><br><span class="line">       4: invokespecial #3                  // Method java/util/ArrayList.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">       7: astore_1</span><br><span class="line">       8: aload_1</span><br><span class="line">       9: new           #4                  // class java/util/Date</span><br><span class="line">      12: dup</span><br><span class="line">      13: invokespecial #5                  // Method java/util/Date.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">      16: invokevirtual #6                  // Method java/util/ArrayList.add:(Ljava/lang/Object;)Z</span><br><span class="line">      19: pop</span><br><span class="line">      20: aload_1</span><br><span class="line">      21: iconst_0</span><br><span class="line">      22: invokevirtual #7                  // Method java/util/ArrayList.get:(I)Ljava/lang/Object;</span><br><span class="line">      25: checkcast     #4                  // class java/util/Date</span><br><span class="line">      28: astore_2</span><br><span class="line">      29: return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到第22行调用ArrayList.get()方法，方法返回值是Object，说明类型擦除了。然后第25，它做了一个checkcast操作，即检查类型#4,为class java/util/Date 是一个Date类型，即做Date类型的强转。<br>所以不是在get方法里强转的，是在你调用的地方强转的。</p>
+<h2 id="泛型的上下边界"><a href="#泛型的上下边界" class="headerlink" title="泛型的上下边界"></a>泛型的上下边界</h2><h3 id="泛型中上界和下界的定义"><a href="#泛型中上界和下界的定义" class="headerlink" title="泛型中上界和下界的定义"></a>泛型中上界和下界的定义</h3><p><strong>上界</strong> &lt;? extend Person&gt;<br><strong>下界</strong> &lt;? super Student&gt;</p>
+<h3 id="上界和下界的特点"><a href="#上界和下界的特点" class="headerlink" title="上界和下界的特点"></a>上界和下界的特点</h3><p>上界的list只能get，不能add（确切地说不能add出除null之外的对象，包括Object）<br>下界的list只能add，不能get</p>
+<p>上界 &lt;? extend Person&gt; ，表示所有继承Person的子类，但是具体是哪个子类，无法确定，所以调用add的时候，要add什么类型，不知道。但是get的时候，不管是什么子类，不管追溯多少辈，肯定有个父类是Person，所以，我都可以用最大的父类Person接着，也就是把所有的子类向上转型为Person。</p>
+<p>下界 &lt;? super Student&gt;，表示Student的所有父类，包括Person，一直可以追溯到老祖宗Object 。那么当我add的时候，我不能add Student的父类，因为不能确定List里面存放的到底是哪个父类。但是我可以add Student及其子类。因为不管我的子类是什么类型，它都可以向上转型为Student及其所有的父类甚至转型为Object 。但是当我get的时候，Student的父类这么多，我用什么接着呢，除了Object，其他的都接不住。</p>
+<p>&lt;? super T&gt;的意思是T及T的父类<br> 这里真正实现Comparab接口的类型是Phone<br> 而你用<t extends="" comparable<?="" super="" t="">&gt;这个情况下T类实现Comparab接口的类型必须是T这个类，</t></p>
+<h2 id="泛型相关面试题"><a href="#泛型相关面试题" class="headerlink" title="泛型相关面试题"></a>泛型相关面试题</h2><ol>
+<li><p>Java中的泛型是什么 ? 使用泛型的好处是什么?<br>泛型是一种参数化类型的机制。它可以使得代码适用于各种类型，从而编写更加通用的代码，例如集合框架。泛型是一种编译时类型确认机制。它提供了编译期的类型安全，确保在泛型类型（通常为泛型集合）上只能使用正确类型的对象，避免了在运行时出现ClassCastException。</p>
+</li>
+<li><p>Java的泛型是如何工作的 ? 什么是类型擦除 ?<br>泛型的正常工作是依赖编译器在编译源码的时候，先进行类型检查，然后进行类型擦除并且在类型参数出现的地方插入强制转换的相关指令实现的。编译器在编译时擦除了所有类型相关的信息，所以在运行时不存在任何类型相关的信息。例如List<string>在运行时仅用一个List类型来表示。为什么要进行擦除呢？这是为了避免类型膨胀。</string></p>
+</li>
+<li><p>什么是泛型中的限定通配符和非限定通配符 ?<br>限定通配符对类型进行了限制。有两种限定通配符，一种是&lt;? extends T&gt;它通过确保类型必须是T的子类来设定类型的上界，另一种是&lt;? super T&gt;它通过确保类型必须是T的父类来设定类型的下界。泛型类型必须用限定内的类型来进行初始化，否则会导致编译错误。另一方面&lt;?&gt;表示了非限定通配符，因为&lt;?&gt;可以用任意类型来替代。</p>
+</li>
+<li><p>List&lt;? extends T&gt;和List &lt;? super T&gt;之间有什么区别 ?<br>这和上一个面试题有联系，有时面试官会用这个问题来评估你对泛型的理解，而不是直接问你什么是限定通配符和非限定通配符。这两个List的声明都是限定通配符的例子，List&lt;? extends T&gt;可以接受任何继承自T的类型的List，而List&lt;? super T&gt;可以接受任何T的父类构成的List。例如List&lt;? extends Number&gt;可以接受List<integer>或List<float>。在本段出现的连接中可以找到更多信息。</float></integer></p>
+</li>
+<li><p>如何编写一个泛型方法，让它能接受泛型参数并返回泛型类型?<br>编写泛型方法并不困难，你需要用泛型类型来替代原始类型，比如使用T, E or K,V等被广泛认可的类型占位符。泛型方法的例子请参阅Java集合类框架。</p>
+</li>
+<li><p>Java中如何使用泛型编写带有参数的类?<br>这是上一道面试题的延伸。面试官可能会要求你用泛型编写一个类型安全的类，而不是编写一个泛型方法。关键仍然是使用泛型类型来代替原始类型，而且要使用JDK中采用的标准占位符。</p>
+</li>
+<li><p>编写一段泛型程序来实现LRU缓存?<br>对于喜欢Java编程的人来说这相当于是一次练习。给你个提示，LinkedHashMap可以用来实现固定大小的LRU缓存，当LRU缓存已经满了的时候，它会把最老的键值对移出缓存。LinkedHashMap提供了一个称为removeEldestEntry()的方法，该方法会被put()和putAll()调用来删除最老的键值对。</p>
+</li>
+<li><p>你可以把List<string>传递给一个接受List<object>参数的方法吗？<br>对任何一个不太熟悉泛型的人来说，这个Java泛型题目看起来令人疑惑，因为乍看起来String是一种Object，所以List<string>应当可以用在需要List<object>的地方，但是事实并非如此。真这样做的话会导致编译错误。如果你再深一步考虑，你会发现Java这样做是有意义的，因为List<object>可以存储任何类型的对象包括String, Integer等等，而List<string>却只能用来存储String。</string></object></object></string></object></string></p>
+</li>
+<li><p>Array中可以用泛型吗?<br>这可能是Java泛型面试题中最简单的一个了，当然前提是你要知道Array事实上并不支持泛型，这也是为什么Joshua Bloch在Effective Java一书中建议使用List来代替Array，因为List可以提供编译期的类型安全保证，而Array却不能。</p>
+</li>
+<li><p>如何阻止Java中的类型未检查的警告?<br>如果你把泛型和原始类型混合起来使用，例如下列代码，Java 5的javac编译器会产生类型未检查的警告，例如List<string> rawList = new ArrayList()<br>注意: Hello.java使用了未检查或称为不安全的操作;这种警告可以使用@SuppressWarnings(“unchecked”)注解来屏蔽。</string></p>
+</li>
+<li><p>Java中List<object>和原始类型List之间的区别?<br>原始类型和带参数类型<object>之间的主要区别是，在编译时编译器不会对原始类型进行类型安全检查，却会对带参数的类型进行检查，通过使用Object作为类型，可以告知编译器该方法可以接受任何类型的对象，比如String或Integer。这道题的考察点在于对泛型中原始类型的正确理解。它们之间的第二点区别是，你可以把任何带参数的泛型类型传递给接受原始类型List的方法，但却不能把List<string>传递给接受List<object>的方法，因为会产生编译错误。</object></string></object></object></p>
+</li>
+<li><p>Java中List&lt;?&gt;和List<object>之间的区别是什么?<br>这道题跟上一道题看起来很像，实质上却完全不同。List&lt;?&gt; 是一个未知类型的List，而List<object>其实是任意类型的List。你可以把List<string>, List<integer>赋值给List&lt;?&gt;，却不能把List<string>赋值给List<object>。</object></string></integer></string></object></object></p>
+</li>
+<li><p>List<string>和原始类型List之间的区别.<br>该题类似于“原始类型和带参数类型之间有什么区别”。带参数类型是类型安全的，而且其类型安全是由编译器保证的，但原始类型List却不是类型安全的。你不能把String之外的任何其它类型的Object存入String类型的List中，而你可以把任何类型的对象存入原始List中。使用泛型的带参数类型你不需要进行类型转换，但是对于原始类型，你则需要进行显式的类型转换。</string></p>
+</li>
+</ol>
+<p><strong>参考：</strong><br><a href="https://www.cnblogs.com/xll1025/p/6489088.html" target="_blank" rel="noopener">https://www.cnblogs.com/xll1025/p/6489088.html</a><br><a href="https://www.cnblogs.com/doucheyard/p/6855823.html" target="_blank" rel="noopener">https://www.cnblogs.com/doucheyard/p/6855823.html</a><br><a href="https://blog.csdn.net/sunxianghuang/article/details/51982979" target="_blank" rel="noopener">https://blog.csdn.net/sunxianghuang/article/details/51982979</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/泛型/" rel="tag"># 泛型</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/alg-3003000/" rel="next" title="平衡二叉树相关算法">
+                <i class="fa fa-chevron-left"></i> 平衡二叉树相关算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/alg-3004000/" rel="prev" title="红黑树原理详解和java代码实现">
+                红黑树原理详解和java代码实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lizhiyong</p>
+              <p class="site-description motion-element" itemprop="description">菜鸟的涅槃梦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#泛型的使用"><span class="nav-number">2.</span> <span class="nav-text">泛型的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型类"><span class="nav-number">2.1.</span> <span class="nav-text">泛型类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型接口"><span class="nav-number">2.2.</span> <span class="nav-text">泛型接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型方法"><span class="nav-number">2.3.</span> <span class="nav-text">泛型方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java中的泛型原理"><span class="nav-number">3.</span> <span class="nav-text">java中的泛型原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类型擦除后保留的原始类型"><span class="nav-number">3.1.</span> <span class="nav-text">类型擦除后保留的原始类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型擦除引起的问题及解决方法"><span class="nav-number">3.2.</span> <span class="nav-text">类型擦除引起的问题及解决方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#先检查，再编译"><span class="nav-number">3.2.1.</span> <span class="nav-text">先检查，再编译</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#泛型的上下边界"><span class="nav-number">4.</span> <span class="nav-text">泛型的上下边界</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型中上界和下界的定义"><span class="nav-number">4.1.</span> <span class="nav-text">泛型中上界和下界的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上界和下界的特点"><span class="nav-number">4.2.</span> <span class="nav-text">上界和下界的特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#泛型相关面试题"><span class="nav-number">5.</span> <span class="nav-text">泛型相关面试题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lizhiyong</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">11.3k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
