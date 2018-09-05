@@ -79,17 +79,24 @@
 
 
 
+<meta name="description" content="概述红黑树（Red-Balck Tree）是一种特殊的二叉查找树。红黑树的每个结点上增加一个存储位表示结点的颜色，可以是RED或者BLACK。通过对任何一条从根到叶子的路径上的各个结点着色方式的限制，红黑树确保没有一条路径会比其他路径长出两倍，因而是接近平衡的。 红黑树的特性一棵二叉查找树若为红黑树，需满足下面的条件：(1) 每个结点或者为红色，或是黑色(2) 根结点是黑色的(3) 每个叶子结点(">
 <meta name="keywords" content="红黑树">
 <meta property="og:type" content="article">
 <meta property="og:title" content="红黑树原理详解和java代码实现">
 <meta property="og:url" content="https://lizy-tech.github.io/2018/09/alg-3004000/index.html">
 <meta property="og:site_name" content="lizy-tech">
+<meta property="og:description" content="概述红黑树（Red-Balck Tree）是一种特殊的二叉查找树。红黑树的每个结点上增加一个存储位表示结点的颜色，可以是RED或者BLACK。通过对任何一条从根到叶子的路径上的各个结点着色方式的限制，红黑树确保没有一条路径会比其他路径长出两倍，因而是接近平衡的。 红黑树的特性一棵二叉查找树若为红黑树，需满足下面的条件：(1) 每个结点或者为红色，或是黑色(2) 根结点是黑色的(3) 每个叶子结点(">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3004000/RB-tree.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3004000/rotate.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3004000/rotate-1.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3004000/rotate-2.png">
 <meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3004000/rotate-left.gif">
-<meta property="og:updated_time" content="2018-09-05T02:55:25.460Z">
+<meta property="og:updated_time" content="2018-09-05T10:31:52.115Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="红黑树原理详解和java代码实现">
-<meta name="twitter:image" content="https://lizy-tech.github.io/2018/09/alg-3004000/rotate-left.gif">
+<meta name="twitter:description" content="概述红黑树（Red-Balck Tree）是一种特殊的二叉查找树。红黑树的每个结点上增加一个存储位表示结点的颜色，可以是RED或者BLACK。通过对任何一条从根到叶子的路径上的各个结点着色方式的限制，红黑树确保没有一条路径会比其他路径长出两倍，因而是接近平衡的。 红黑树的特性一棵二叉查找树若为红黑树，需满足下面的条件：(1) 每个结点或者为红色，或是黑色(2) 根结点是黑色的(3) 每个叶子结点(">
+<meta name="twitter:image" content="https://lizy-tech.github.io/2018/09/alg-3004000/RB-tree.png">
 
 
 
@@ -356,7 +363,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  1,747 字
                 </span>
               
 
@@ -372,7 +379,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  8 分钟
                 </span>
               
             </div>
@@ -393,7 +400,31 @@
       
 
       
-        <img src="/2018/09/alg-3004000/rotate-left.gif" title="图1 左旋">
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>红黑树（Red-Balck Tree）是一种特殊的二叉查找树。红黑树的每个结点上增加一个存储位表示结点的颜色，可以是RED或者BLACK。通过对任何一条从根到叶子的路径上的各个结点着色方式的限制，红黑树确保没有一条路径会比其他路径长出两倍，因而是接近平衡的。</p>
+<h2 id="红黑树的特性"><a href="#红黑树的特性" class="headerlink" title="红黑树的特性"></a>红黑树的特性</h2><p>一棵二叉查找树若为红黑树，需满足下面的条件：<br>(1) 每个结点或者为红色，或是黑色<br>(2) 根结点是黑色的<br>(3) 每个叶子结点(NIL)是黑色的  （这里的叶结点NIL是空的叶结点，不包含数据信息）<br>(4) 如果一个结点是红色的，则他的两个儿子都是黑色的<br>(5) 对每个结点，从该结点到其子孙节点的所有路径上包含相同数目的黑结点<br>红黑树的示意图如下：<br><img src="/2018/09/alg-3004000/RB-tree.png" title="图1 红黑树"></p>
+<h2 id="红黑树结点结构"><a href="#红黑树结点结构" class="headerlink" title="红黑树结点结构"></a>红黑树结点结构</h2><p>通过以上的描述，结合jdk中TreeMap的源码，红黑树结点中主要包括颜色，结点值，指向左孩子、右孩子、父节点的指针，java代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class RBTree&lt;T extends Comparable&lt;T&gt;&gt; &#123;</span><br><span class="line"></span><br><span class="line">    private transient Entry&lt;T&gt; root;  //根结点</span><br><span class="line"></span><br><span class="line">    private static final boolean RED   = false;</span><br><span class="line">    private static final boolean BLACK = true;</span><br><span class="line">    </span><br><span class="line">    public class Entry&lt;T extends Comparable&lt;T&gt;&gt;&#123;</span><br><span class="line">        T value;        //关键字</span><br><span class="line">        Entry&lt;T&gt; left;  //左孩子</span><br><span class="line">        Entry&lt;T&gt; right; //右孩子</span><br><span class="line">        Entry&lt;T&gt; parent; //父结点</span><br><span class="line">        boolean color = BLACK;   //颜色</span><br><span class="line"></span><br><span class="line">        Entry(T value, Entry&lt;T&gt; parent) &#123;</span><br><span class="line">            this.value = value;</span><br><span class="line">            this.parent = parent;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h1><p>在含有n个关键字的红黑树上运行TREE-INSERT和TREE-DELETE操作时的时间为O(\(lg n\)),但是由于这两个操作会改变树的结构，导致树违背上述的红黑树的五条性质，这时候就需要改变树中某些结点的颜色和指针结构。指针结构的修改通过旋转来完成的，包括左旋和右旋。左旋和右旋镜像对称，如下图：<br><img src="/2018/09/alg-3004000/rotate.png" title="图2 左旋和右旋"></p>
+<h2 id="左旋"><a href="#左旋" class="headerlink" title="左旋"></a>左旋</h2><p>当在某个结点x上做左旋时，我们假设它的右孩子y不是nil，左旋之后y的左孩子变成x的右孩子，x为y的左孩子，y为子树的新根结点。伪代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">LEFT-ROTATE(T,x)</span><br><span class="line">	y ← right[x]</span><br><span class="line">	right[x] ← left[y]  // 将y的左孩子变成x的右孩子</span><br><span class="line">	if left[y] != nil[T]</span><br><span class="line">	then p[left[y]] ← x</span><br><span class="line">	p[y] ← p[x]    // 将x的父节点变成y的父亲</span><br><span class="line">	if p[x] = nil[T]</span><br><span class="line">		then root[T] ← y</span><br><span class="line">		else if x=left[p[x]]</span><br><span class="line">			then left[p[x]] ← y</span><br><span class="line">			else right[p[x]] ← y</span><br><span class="line">	left[y] ← x //将x变成y的左孩子</span><br><span class="line">	p[x] ← y</span><br></pre></td></tr></table></figure></p>
+<p>参考上面的伪代码和jdk中TreeMap的源码，java实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private void leftRotate(Entry&lt;T&gt; x) &#123;</span><br><span class="line">    Entry&lt;T&gt; y = x.right; //将x的右孩子设为y</span><br><span class="line">    x.right = y.left;  //将x的左孩子 设为 y的右孩子</span><br><span class="line">    if (y.left != null) &#123;</span><br><span class="line">        y.left.parent = x;</span><br><span class="line">    &#125;</span><br><span class="line">    y.parent = x.parent;</span><br><span class="line"></span><br><span class="line">    if (x.parent == null) &#123;</span><br><span class="line">        this.root = y;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        if (x.parent.left == x) &#123;</span><br><span class="line">            x.parent.left = y;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            x.parent.right = y;</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">    y.left = x;</span><br><span class="line">    x.parent = y;        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="右旋"><a href="#右旋" class="headerlink" title="右旋"></a>右旋</h2><p>右旋与左旋成镜像对称，java代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">private void rigthRotate(Entry&lt;T&gt; y) &#123;</span><br><span class="line">    Entry&lt;T&gt; x = y.left;</span><br><span class="line">    y.left = x.right;</span><br><span class="line">    if (x.right != null) &#123;</span><br><span class="line">        x.right.parent = y;</span><br><span class="line">    &#125;</span><br><span class="line">    x.parent = y.parent;</span><br><span class="line">    if (x.parent == null) &#123;</span><br><span class="line">        this.root = x;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        if (y == y.parent.right) &#123;</span><br><span class="line">            y.parent.right = x;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            y.parent.left = x;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    x.right = y;</span><br><span class="line">    y.parent = x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h1><p>向一棵红黑树中插入一个新结点z，先将树看成一颗普通的二叉查找树T，将z着色为红色，完成插入操作，然后为了继续保证红黑树的性质，调用辅助程序RB—INSERT-FIXUP来对结点重新着色并旋转。</p>
+<h2 id="分类情况"><a href="#分类情况" class="headerlink" title="分类情况"></a>分类情况</h2><h3 id="被插入的结点为根节点"><a href="#被插入的结点为根节点" class="headerlink" title="被插入的结点为根节点"></a>被插入的结点为根节点</h3><blockquote>
+<pre><code> 直接将此结点着色为黑色
+</code></pre></blockquote>
+<h3 id="被插入结点的父结点是黑色"><a href="#被插入结点的父结点是黑色" class="headerlink" title="被插入结点的父结点是黑色"></a>被插入结点的父结点是黑色</h3><blockquote>
+<pre><code> 无需特殊处理，结点插入之后，仍然是红黑树
+</code></pre></blockquote>
+<h3 id="被插入结点的父结点是红色"><a href="#被插入结点的父结点是红色" class="headerlink" title="被插入结点的父结点是红色"></a>被插入结点的父结点是红色</h3><blockquote>
+<pre><code> 这种情况破坏了性质4，具体分以下几种情况：
+</code></pre></blockquote>
+<p>首先设插入的结点为z，z的父结点用p[z]表示，z的叔叔结点用y表示；</p>
+<h4 id="p-z-为p-p-z-的左孩子，p-z-为红色，y为黑色，z为p-z-的左孩子"><a href="#p-z-为p-p-z-的左孩子，p-z-为红色，y为黑色，z为p-z-的左孩子" class="headerlink" title="p[z]为p[p[z]]的左孩子，p[z]为红色，y为黑色，z为p[z]的左孩子"></a>p[z]为p[p[z]]的左孩子，p[z]为红色，y为黑色，z为p[z]的左孩子</h4><p>这时只需要对p[p[z]]结点进行右旋同时，p[p[z]]和p[z]的颜色互换，调整如下图：<br><img src="/2018/09/alg-3004000/rotate-1.png" title="图3"></p>
+<h4 id="p-z-为p-p-z-的左孩子，p-z-为红色，y为黑色，z为p-z-的右孩子"><a href="#p-z-为p-p-z-的左孩子，p-z-为红色，y为黑色，z为p-z-的右孩子" class="headerlink" title="p[z]为p[p[z]]的左孩子，p[z]为红色，y为黑色，z为p[z]的右孩子"></a>p[z]为p[p[z]]的左孩子，p[z]为红色，y为黑色，z为p[z]的右孩子</h4><p>当z为p[z]的右孩子是，先以p[z]左旋，这是将p[z]看作新插入的结点，就变成第一种情况了，只需要将p[p[z]]结点右旋，同时p[p[z]]和z的颜色互换，调整图如下：<br><img src="/2018/09/alg-3004000/rotate-2.png" title="图4"></p>
+<h4 id="p-z-为p-p-z-的右孩子，p-z-为红色，y为黑色，z为p-z-的左孩子"><a href="#p-z-为p-p-z-的右孩子，p-z-为红色，y为黑色，z为p-z-的左孩子" class="headerlink" title="p[z]为p[p[z]]的右孩子，p[z]为红色，y为黑色，z为p[z]的左孩子"></a>p[z]为p[p[z]]的右孩子，p[z]为红色，y为黑色，z为p[z]的左孩子</h4><p>这种情况与第一种情况类似</p>
+<h4 id="p-z-为p-p-z-的右孩子，p-z-为红色，y为黑色，z为p-z-的右孩子"><a href="#p-z-为p-p-z-的右孩子，p-z-为红色，y为黑色，z为p-z-的右孩子" class="headerlink" title="p[z]为p[p[z]]的右孩子，p[z]为红色，y为黑色，z为p[z]的右孩子"></a>p[z]为p[p[z]]的右孩子，p[z]为红色，y为黑色，z为p[z]的右孩子</h4><p>这种情况与第二种情况类似</p>
+<h4 id="p-z-为红色，y为红色"><a href="#p-z-为红色，y为红色" class="headerlink" title="p[z]为红色，y为红色"></a>p[z]为红色，y为红色</h4><p>这种情况只需要将p[z]和y都着色为黑色即可</p>
+<h2 id="插入代码实现"><a href="#插入代码实现" class="headerlink" title="插入代码实现"></a>插入代码实现</h2><p>通过上面的情况分析，参照jdk中TreeMap的实现，红黑树插入结点的java代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">public void insert(T value) &#123;</span><br><span class="line">    Entry&lt;T&gt; node = new Entry&lt;&gt;(value, null);</span><br><span class="line">    if (node != null) &#123;</span><br><span class="line">        insert(node);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public void insert(Entry&lt;T&gt; node) &#123;</span><br><span class="line">    Entry&lt;T&gt; t = root;</span><br><span class="line">    if (t == null) &#123;</span><br><span class="line">        root = node;  //插入结点为根节点</span><br><span class="line">    &#125;</span><br><span class="line">    int cmp;</span><br><span class="line">    Entry&lt;T&gt; y = null;</span><br><span class="line">    while (t != null) &#123;</span><br><span class="line">        y = t;</span><br><span class="line">        cmp = node.value.compareTo(t.value);</span><br><span class="line">        if (cmp &gt; 0) &#123;</span><br><span class="line">            t = t.right;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            t = t.left;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    node.parent = y;</span><br><span class="line">    if (y != null) &#123;</span><br><span class="line">        cmp = node.value.compareTo(y.value);</span><br><span class="line">        if (cmp &lt; 0) &#123;</span><br><span class="line">            y.left = node;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            y.right = node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    node.color = RED;</span><br><span class="line">    fixAfterInsertion(node);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void fixAfterInsertion(Entry&lt;T&gt; z) &#123;</span><br><span class="line">    while (z != null &amp;&amp; z != root &amp;&amp; z.parent.color == RED) &#123;// p[z]为红色</span><br><span class="line">        if (parentOf(z) == leftOf(parentOf(parentOf(z)))) &#123; // p[z]为p[p[z]]的左孩子</span><br><span class="line">            Entry&lt;T&gt; y = rightOf(parentOf(parentOf(z)));</span><br><span class="line">            if (y.color == RED) &#123; // y为红色</span><br><span class="line">                parentOf(z).color = BLACK;</span><br><span class="line">                y.color = BLACK;</span><br><span class="line">                parentOf(parentOf(z)).color = RED;</span><br><span class="line">                z = parentOf(parentOf(z));</span><br><span class="line">            &#125; else &#123; //y为黑色</span><br><span class="line">                if (z == rightOf(parentOf(z))) &#123;</span><br><span class="line">                    z = parentOf(z);</span><br><span class="line">                    leftRotate(z);</span><br><span class="line">                &#125;</span><br><span class="line">                parentOf(z).color = BLACK;</span><br><span class="line">                parentOf(parentOf(z)).color = RED;</span><br><span class="line">                rigthRotate(parentOf(parentOf(z)));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            Entry&lt;T&gt; y = leftOf(parentOf(parentOf(z)));</span><br><span class="line">            if (y.color == RED) &#123;</span><br><span class="line">                parentOf(z).color = BLACK;</span><br><span class="line">                y.color = BLACK;</span><br><span class="line">                parentOf(parentOf(z)).color = RED;</span><br><span class="line">                z = parentOf(parentOf(z));</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                if (z == leftOf(parentOf(z))) &#123;</span><br><span class="line">                    z = parentOf(z);</span><br><span class="line">                    rigthRotate(z);</span><br><span class="line">                &#125;</span><br><span class="line">                parentOf(z).color =  BLACK;</span><br><span class="line">                parentOf(parentOf(z)).color = RED;</span><br><span class="line">                leftRotate(parentOf(parentOf(z)));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    root.color = BLACK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Entry&lt;T&gt; parentOf(Entry&lt;T&gt; p) &#123;</span><br><span class="line">    return (p == null ? null: p.parent);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Entry&lt;T&gt; leftOf(Entry&lt;T&gt; p) &#123;</span><br><span class="line">    return (p == null) ? null: p.left;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Entry&lt;T&gt; rightOf(Entry&lt;T&gt; p) &#123;</span><br><span class="line">    return (p == null) ? null: p.right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h1><img src="/2018/09/alg-3004000/rotate-left.gif" title="图1 左旋">
       
     </div>
     
@@ -483,8 +514,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -545,6 +585,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#红黑树的特性"><span class="nav-number">1.1.</span> <span class="nav-text">红黑树的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#红黑树结点结构"><span class="nav-number">1.2.</span> <span class="nav-text">红黑树结点结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#旋转"><span class="nav-number">2.</span> <span class="nav-text">旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#左旋"><span class="nav-number">2.1.</span> <span class="nav-text">左旋</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#右旋"><span class="nav-number">2.2.</span> <span class="nav-text">右旋</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#插入"><span class="nav-number">3.</span> <span class="nav-text">插入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分类情况"><span class="nav-number">3.1.</span> <span class="nav-text">分类情况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#被插入的结点为根节点"><span class="nav-number">3.1.1.</span> <span class="nav-text">被插入的结点为根节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#被插入结点的父结点是黑色"><span class="nav-number">3.1.2.</span> <span class="nav-text">被插入结点的父结点是黑色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#被插入结点的父结点是红色"><span class="nav-number">3.1.3.</span> <span class="nav-text">被插入结点的父结点是红色</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#p-z-为p-p-z-的左孩子，p-z-为红色，y为黑色，z为p-z-的左孩子"><span class="nav-number">3.1.3.1.</span> <span class="nav-text">p[z]为p[p[z]]的左孩子，p[z]为红色，y为黑色，z为p[z]的左孩子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#p-z-为p-p-z-的左孩子，p-z-为红色，y为黑色，z为p-z-的右孩子"><span class="nav-number">3.1.3.2.</span> <span class="nav-text">p[z]为p[p[z]]的左孩子，p[z]为红色，y为黑色，z为p[z]的右孩子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#p-z-为p-p-z-的右孩子，p-z-为红色，y为黑色，z为p-z-的左孩子"><span class="nav-number">3.1.3.3.</span> <span class="nav-text">p[z]为p[p[z]]的右孩子，p[z]为红色，y为黑色，z为p[z]的左孩子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#p-z-为p-p-z-的右孩子，p-z-为红色，y为黑色，z为p-z-的右孩子"><span class="nav-number">3.1.3.4.</span> <span class="nav-text">p[z]为p[p[z]]的右孩子，p[z]为红色，y为黑色，z为p[z]的右孩子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#p-z-为红色，y为红色"><span class="nav-number">3.1.3.5.</span> <span class="nav-text">p[z]为红色，y为红色</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入代码实现"><span class="nav-number">3.2.</span> <span class="nav-text">插入代码实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#删除"><span class="nav-number">4.</span> <span class="nav-text">删除</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -572,7 +628,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">11.3k</span>
+    <span title="Site words total count">13.1k</span>
   
 </div>
 
@@ -694,24 +750,7 @@
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
 
 
 
@@ -764,6 +803,43 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
   
 
 
