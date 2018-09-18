@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="图," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在计算机的应用中，由相连的结点所表示的模型起到了关键的作用，在计算机中描述这样的模型通常称为图(Graph)。无论多么复杂的图都是由顶点和边构成的。采用形式化的定义，图由两个集合V(Vertex)和E(Edge)组成，记为G=(V,E),其中V是顶点的有限集合，记为V(G),E是连接V中两个不同顶点（顶点对）的边的有限集合，记为E(G)。 基本概念顶点(Vertex)：图中的数据元素。其中在无向图">
+<meta name="keywords" content="图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图的基础知识">
+<meta property="og:url" content="https://lizy-tech.github.io/2018/09/alg-3005000/index.html">
+<meta property="og:site_name" content="lizy-tech">
+<meta property="og:description" content="在计算机的应用中，由相连的结点所表示的模型起到了关键的作用，在计算机中描述这样的模型通常称为图(Graph)。无论多么复杂的图都是由顶点和边构成的。采用形式化的定义，图由两个集合V(Vertex)和E(Edge)组成，记为G=(V,E),其中V是顶点的有限集合，记为V(G),E是连接V中两个不同顶点（顶点对）的边的有限集合，记为E(G)。 基本概念顶点(Vertex)：图中的数据元素。其中在无向图">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3005000/无向图G1.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3005000/有向图G2.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3005000/带权有向图G3.png">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3005000/邻接表.png">
+<meta property="og:updated_time" content="2018-09-18T07:01:24.858Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="图的基础知识">
+<meta name="twitter:description" content="在计算机的应用中，由相连的结点所表示的模型起到了关键的作用，在计算机中描述这样的模型通常称为图(Graph)。无论多么复杂的图都是由顶点和边构成的。采用形式化的定义，图由两个集合V(Vertex)和E(Edge)组成，记为G=(V,E),其中V是顶点的有限集合，记为V(G),E是连接V中两个不同顶点（顶点对）的边的有限集合，记为E(G)。 基本概念顶点(Vertex)：图中的数据元素。其中在无向图">
+<meta name="twitter:image" content="https://lizy-tech.github.io/2018/09/alg-3005000/无向图G1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://lizy-tech.github.io/2018/09/alg-3005000/"/>
+
+
+
+
+
+  <title>图的基础知识 | lizy-tech</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lizy-tech</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">编程的苦与乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lizy-tech.github.io/2018/09/alg-3005000/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lizhiyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lizy-tech">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图的基础知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-10T10:50:31+08:00">
+                2018-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构和算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构和算法</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构和算法/图/" itemprop="url" rel="index">
+                    <span itemprop="name">图</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,058 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  8 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在计算机的应用中，由相连的结点所表示的模型起到了关键的作用，在计算机中描述这样的模型通常称为图(Graph)。无论多么复杂的图都是由顶点和边构成的。采用形式化的定义，图由两个集合V(Vertex)和E(Edge)组成，记为G=(V,E),其中V是顶点的有限集合，记为V(G),E是连接V中两个不同顶点（顶点对）的边的有限集合，记为E(G)。</p>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p><strong>顶点(Vertex)</strong>：图中的数据元素。其中在无向图中个，若存在一条边（v<sub>i</sub>,v<sub>j</sub>），则称v<sub>i</sub>和v<sub>j</sub>为该边的两个<strong>端点</strong>，并称它们互为<strong>邻接点</strong>。<br><strong>有向图</strong>：在图G中，如果表示边的顶点对是有序的，则称图G是有向图；<br><strong>无向图</strong>：在图G中，如果边的顶点对是无序的，则称图是无向图；<br><strong>顶点的度、入度、出度</strong>：在无向图中，顶点所具有的边的数目称为该顶点的度；在有向图中，以某顶点为终点的入边的数目称为该顶点的入度；以某顶点为起点的出边的数目称为该顶点的出度。<br><strong>完全图</strong>：若无向图中的每两个顶点之间都存在这一条边，有向图中个，没两个顶点之间都存在着方向相反的两条边，则称此图为完全图。<br><strong>稠密图</strong>：当一个图接近完全图时，则称为稠密图<br><strong>稀疏图</strong>：当一个图含有较少的边数（即e&lt;<n(n+1)）时，则称为稀疏图 **回路（环）**：若一条路径上的开始点与结束点为同一个顶点，则此路径称为回路或者环。="" **连通、连通图、联通分量**：在无向图g中，若从顶点v<sub="">i&lt;/sub&gt;到顶点v<sub>j</sub>有路径，则称v<sub>i</sub>和v<sub>j</sub>是连通的。若图G中任意连个顶点都连通，则称G为<strong>连通图</strong>，否则称为非连通图。无向图G中的极大连通子图称为G的<strong>连通分量</strong>。<br><strong>强连通图和强连通分量</strong>：若有向图G中的任意两个顶点v<sub>i</sub>和v<sub>j</sub>都是连通的，则称图G是<strong>强连通图</strong>。有向图G中的极大强连通子图称为G的<strong>强联通分量</strong>。<br><strong>关节点和重连通图</strong>：假如在删除图中顶点v<sub>i</sub>以及相关联的各边后，将图的一个连通分量分割成两个或多个连通分量，则称顶点v<sub>i</sub>是该图的关节点。一个没有关节点的连通图称为重连通图。<br><strong>权和网</strong>：图中每一条边都可以有一个对应的数值，这种与边相关的数值称为权。边上带权的图称为带权图，也称为网。<br><strong>最小生成树</strong>：一个连通图的生成树是一个极小连通子图，它含有图中全部的顶点，但只有构成一棵树的（n-1）条边。对于一个带权连通无向图G中的不同生成树，每棵树的所有边上的权值只和可能不同，图的所有生成树中具有边上的权值只和最小的树称为图的最小生成树。</n(n+1)）时，则称为稀疏图></p>
+<h1 id="图的存储结构"><a href="#图的存储结构" class="headerlink" title="图的存储结构"></a>图的存储结构</h1><p>图的存储结构除了要存储图中各个顶点本身的信息外，同时还要存储顶点与顶点之间的所有关系（边信息）。常用的图的存储结构有邻接矩阵和邻接表。</p>
+<h2 id="邻接矩阵"><a href="#邻接矩阵" class="headerlink" title="邻接矩阵"></a>邻接矩阵</h2><p>邻接矩阵是表示顶点之间相邻关系的矩阵。设G=(V,E)是具有n(n&gt;0)个顶点的图，G的邻接矩阵A是n阶方阵，其中A[i][j]表示顶点\(v_i\)和\(v_j\)之间的关系。<br>当A[i][j]=1表示有边，A[i][j]=0表示无边；<br>在带权的图中，A[i][j]的数值表示点之间的权值，0表示两个顶点是同一个，\(\infty\)表示无路径。<br>例如：<br>无向图G1如图1：<img src="/2018/09/alg-3005000/无向图G1.png" title="图1 无向图G1">，G1的邻接矩阵为公式（1）如下：</p>
+<script type="math/tex; mode=display">
+\begin{bmatrix}
+0 & 1 & 0 & 1 & 1 \\
+1 & 0 & 1 & 1 & 0 \\
+0 & 1 & 0 & 1 & 1 \\
+1 & 1 & 1 & 0 & 1 \\
+1 & 0 & 1 & 1 & 0 
+\end{bmatrix} \tag{1}</script><p>有向图G2如图2：<img src="/2018/09/alg-3005000/有向图G2.png" title="图2 有向图G2">，它的邻接矩阵为公式（2）如下：</p>
+<script type="math/tex; mode=display">
+\begin{bmatrix}
+0 & 1 & 0 & 1 & 0 \\
+0 & 0 & 1 & 1 & 0 \\
+0 & 0 & 0 & 1 & 1 \\
+0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 1 & 0 
+\end{bmatrix} \tag{2}</script><p>带权有向图G3如图三：<img src="/2018/09/alg-3005000/带权有向图G3.png" title="图3 带权有向图G3">，它的邻接矩阵为公式（3）如下：</p>
+<script type="math/tex; mode=display">
+\begin{bmatrix}
+0 & 8 & \infty & 5 & \infty \\
+\infty & 0 & 3 & \infty & \infty \\
+\infty & \infty & 0 & \infty & 6 \\
+\infty & 9 & \infty & 0 & \infty \\
+\infty & \infty & \infty & \infty & 0 
+\end{bmatrix} \tag{3}</script><h3 id="邻接矩阵的特点"><a href="#邻接矩阵的特点" class="headerlink" title="邻接矩阵的特点"></a>邻接矩阵的特点</h3><p>（1） 图的邻接矩阵表示是唯一的；<br>（2） 无向图的邻接矩阵一定是对称矩阵；<br>（3） 不带权的有向图的邻接矩阵一般是稀疏矩阵；<br>（4） 对于无向图，邻接矩阵的第i行（或者第i列）非零元素（或非\(\infty\)元素）的个数正好是顶点\(v_i\)的度；<br>（5） 对于有向图，邻接矩阵的第i行（或者第i列）非零元素（或非\(\infty\)元素）的个数正好是顶点\(v_i\)的出度（或入度）；<br>（6） 用邻接矩阵方法存储图，容易确定任意两个顶点之间是否有边，但是求图中有多少条边需要花的代价较大。</p>
+<h3 id="邻接矩阵的数据结构"><a href="#邻接矩阵的数据结构" class="headerlink" title="邻接矩阵的数据结构"></a>邻接矩阵的数据结构</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class GraphMatrix&lt;Value extends Comparable&lt;Value&gt;&gt; &#123;</span><br><span class="line">    </span><br><span class="line">    private int[][] edges;//邻接矩阵，用来存储边</span><br><span class="line">    private int n,e; //顶点和边的数目</span><br><span class="line">    Vertex[] vxs;  //顶点信息</span><br><span class="line">    </span><br><span class="line">    class Vertex&#123;//顶点类型</span><br><span class="line">        int no;  //顶点编号</span><br><span class="line">        Value info; //顶点信息</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="邻接表"><a href="#邻接表" class="headerlink" title="邻接表"></a>邻接表</h2><p>图的邻接表存储方法市一中个顺序分配与链式分配的相结合的存储方法，对图中的每一个顶点建立一个单链表，第i个单链表中的结点表示依附于顶点\(v_i\)的边，每个单链表上设置一个表头结点。</p>
+<p>如无向图G1，有向图G2，带权的有向图G3分别对应的邻接表为图4中的（a）、（b）、（c）<br><img src="/2018/09/alg-3005000/邻接表.png" title="图4 三个邻接表"></p>
+<h3 id="邻接表的数据结构"><a href="#邻接表的数据结构" class="headerlink" title="邻接表的数据结构"></a>邻接表的数据结构</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class GraphAL&lt;K,V extends Comparable&lt;V&gt;&gt; &#123;</span><br><span class="line">    private VertexNode[] adjList;//保存邻接表的头结点</span><br><span class="line">    int n,e; //图中的顶点数n和边数e</span><br><span class="line">    boolean[] visit = new boolean[n];//判断顶点是否被访问过</span><br><span class="line"></span><br><span class="line">    class EdgeNode&#123;//弧---链表</span><br><span class="line">        int adjVertex;//当前弧指向的图中邻接表的头结点的位置</span><br><span class="line">        int weight; //权重</span><br><span class="line">        EdgeNode nextArc;//指向下一条弧的指针</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class VertexNode&lt;K,V&gt;&#123;</span><br><span class="line">        K name;//顶点标识</span><br><span class="line">        V data;//顶点存储信息</span><br><span class="line">        EdgeNode firstArc = null;//指向第一条弧</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public GraphAL(int n, int e) &#123;</span><br><span class="line">        this.n = n;</span><br><span class="line">        this.e = e;</span><br><span class="line">        adjList = new VertexNode[e + 1];</span><br><span class="line">        visit = new boolean[e + 1];</span><br><span class="line">        for (int i = 0; i &lt; n; i++) &#123;</span><br><span class="line">            visit[i] = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="图的遍历"><a href="#图的遍历" class="headerlink" title="图的遍历"></a>图的遍历</h1><p>从给定图中任意指定的顶点出发，按照某种搜索方法沿着图的边访问图中所有顶点，是每个顶点仅被访问一次，这个过程称为图的遍历。</p>
+<h2 id="深度优先遍历"><a href="#深度优先遍历" class="headerlink" title="深度优先遍历"></a>深度优先遍历</h2><p>深度优先遍历的思想：首先以一个未被访问过的顶点作为起始顶点，沿当前顶点的边走到未访问过的顶点；当没有未访问过的顶点时，则回到上一个顶点，继续试探别的顶点，直到所有的顶点都被访问过。如上面的无向图G1的深度优先遍历序列为（0为第一个访问点）：0-1-2-3-4；有向图G2的一个深度优先遍历序列为：0-1-2-4-3</p>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public void DFS()&#123;</span><br><span class="line">    for (int i = 0; i &lt; n; i++) &#123;</span><br><span class="line">        visit[i] = false;</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(&quot;DFS: &quot;);</span><br><span class="line">    for (int i = 0; i &lt; n; i++) &#123;</span><br><span class="line">        if (!visit[i]) &#123;</span><br><span class="line">            DFS(i, visit);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public void DFS(int i, boolean[] visit) &#123;</span><br><span class="line">    visit[i] = true;</span><br><span class="line">    System.out.println(&quot; -&gt; &quot; + adjList[i].name);</span><br><span class="line">    EdgeNode node = adjList[i].firstArc;</span><br><span class="line">    while (node != null) &#123;</span><br><span class="line">        if (!visit[node.adjVertex]) &#123;</span><br><span class="line">            DFS(node.adjVertex, visit);</span><br><span class="line">        &#125;</span><br><span class="line">        node = node.nextArc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="广度优先遍历"><a href="#广度优先遍历" class="headerlink" title="广度优先遍历"></a>广度优先遍历</h2><p>广度优先遍历的思想：从某个顶点V出发，访问该顶点的所有邻接点V1，V2..VN；从邻接点V1，V2…VN出发，再访问他们各自的所有邻接点重复上述步骤，直到所有的顶点都被访问过</p>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public void BFS() &#123;</span><br><span class="line">    int head = 0;</span><br><span class="line">    int rear = 0;</span><br><span class="line">    int[] queue = new int[n];</span><br><span class="line">    for (int i = 0; i &lt; n; i++) &#123;</span><br><span class="line">        visit[i] = false;</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(&quot;BFS: &quot;);</span><br><span class="line">    for (int i = 0; i &lt; n; i++) &#123;</span><br><span class="line">        if (!visit[i]) &#123;</span><br><span class="line">            visit[i] = true;</span><br><span class="line">            System.out.println(&quot; -&gt; &quot; + adjList[i].name);</span><br><span class="line">            queue[rear++] = i;</span><br><span class="line">            while (head != rear) &#123;//队列不为空</span><br><span class="line">                int j = queue[head++];</span><br><span class="line">                EdgeNode node = adjList[j].firstArc;</span><br><span class="line">                while (node != null) &#123;</span><br><span class="line">                    int k = node.adjVertex;</span><br><span class="line">                    if (!visit[k]) &#123;</span><br><span class="line">                        visit[k] = true;</span><br><span class="line">                        System.out.println(&quot; -&gt; &quot; + adjList[k].name);</span><br><span class="line">                        queue[rear++] = k;</span><br><span class="line">                    &#125;</span><br><span class="line">                    node = node.nextArc;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<!-- 
+
+$$
+ \left[
+ \begin{matrix}
+   1 & 2 & 3 & 4\\
+   4 & 5 & 6 & 3\\
+   7 & 8 & 9 & 2
+  \end{matrix}
+  \right] \tag{3}
+$$
+
+
+
+
+
+
+
+|表格测试表格测试|表格测试表格测试|表格测试表格测试|
+|:---|-:|:-:|
+|表格测试|表格测试|表格测试|
+ -->
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图/" rel="tag"># 图</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/alg-3004000/" rel="next" title="红黑树原理详解和java代码实现">
+                <i class="fa fa-chevron-left"></i> 红黑树原理详解和java代码实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/latex-1004000/" rel="prev" title="LaTex常用公式小结">
+                LaTex常用公式小结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lizhiyong</p>
+              <p class="site-description motion-element" itemprop="description">菜鸟的涅槃梦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#图的存储结构"><span class="nav-number">2.</span> <span class="nav-text">图的存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#邻接矩阵"><span class="nav-number">2.1.</span> <span class="nav-text">邻接矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#邻接矩阵的特点"><span class="nav-number">2.1.1.</span> <span class="nav-text">邻接矩阵的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#邻接矩阵的数据结构"><span class="nav-number">2.1.2.</span> <span class="nav-text">邻接矩阵的数据结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#邻接表"><span class="nav-number">2.2.</span> <span class="nav-text">邻接表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#邻接表的数据结构"><span class="nav-number">2.2.1.</span> <span class="nav-text">邻接表的数据结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#图的遍历"><span class="nav-number">3.</span> <span class="nav-text">图的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#深度优先遍历"><span class="nav-number">3.1.</span> <span class="nav-text">深度优先遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#广度优先遍历"><span class="nav-number">3.2.</span> <span class="nav-text">广度优先遍历</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lizhiyong</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">15.6k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
