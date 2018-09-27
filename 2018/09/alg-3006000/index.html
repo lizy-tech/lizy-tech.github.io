@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="图," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="有向图中边是单向的，在实际生活中有着广泛的应用：     应 用 顶 点 边     食物链 物种 捕食关系   互联网连接 网页 超链接   程序 模块 外部引用   手机 电话 呼叫   学术研究 论文 引用   金融 股票 交易   网络 计算机 网络连接     本文主要总结一些基础的有向图的算法，包括：有向图中的可达性，寻找有向环，拓扑排序，强连通分量 数据类型1234567891011">
+<meta name="keywords" content="图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="有向图的相关算法小结">
+<meta property="og:url" content="https://lizy-tech.github.io/2018/09/alg-3006000/index.html">
+<meta property="og:site_name" content="lizy-tech">
+<meta property="og:description" content="有向图中边是单向的，在实际生活中有着广泛的应用：     应 用 顶 点 边     食物链 物种 捕食关系   互联网连接 网页 超链接   程序 模块 外部引用   手机 电话 呼叫   学术研究 论文 引用   金融 股票 交易   网络 计算机 网络连接     本文主要总结一些基础的有向图的算法，包括：有向图中的可达性，寻找有向环，拓扑排序，强连通分量 数据类型1234567891011">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://lizy-tech.github.io/2018/09/alg-3006000/拓扑排序.png">
+<meta property="og:updated_time" content="2018-09-27T08:31:54.576Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="有向图的相关算法小结">
+<meta name="twitter:description" content="有向图中边是单向的，在实际生活中有着广泛的应用：     应 用 顶 点 边     食物链 物种 捕食关系   互联网连接 网页 超链接   程序 模块 外部引用   手机 电话 呼叫   学术研究 论文 引用   金融 股票 交易   网络 计算机 网络连接     本文主要总结一些基础的有向图的算法，包括：有向图中的可达性，寻找有向环，拓扑排序，强连通分量 数据类型1234567891011">
+<meta name="twitter:image" content="https://lizy-tech.github.io/2018/09/alg-3006000/拓扑排序.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://lizy-tech.github.io/2018/09/alg-3006000/"/>
+
+
+
+
+
+  <title>有向图的相关算法小结 | lizy-tech</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lizy-tech</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">编程的苦与乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lizy-tech.github.io/2018/09/alg-3006000/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lizhiyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lizy-tech">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">有向图的相关算法小结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-26T15:52:50+08:00">
+                2018-09-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构和算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构和算法</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构和算法/图/" itemprop="url" rel="index">
+                    <span itemprop="name">图</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,506 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>有向图中边是单向的，在实际生活中有着广泛的应用：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">应 用</th>
+<th style="text-align:center">顶 点</th>
+<th style="text-align:center">边</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">食物链</td>
+<td style="text-align:center">物种</td>
+<td style="text-align:center">捕食关系</td>
+</tr>
+<tr>
+<td style="text-align:center">互联网连接</td>
+<td style="text-align:center">网页</td>
+<td style="text-align:center">超链接</td>
+</tr>
+<tr>
+<td style="text-align:center">程序</td>
+<td style="text-align:center">模块</td>
+<td style="text-align:center">外部引用</td>
+</tr>
+<tr>
+<td style="text-align:center">手机</td>
+<td style="text-align:center">电话</td>
+<td style="text-align:center">呼叫</td>
+</tr>
+<tr>
+<td style="text-align:center">学术研究</td>
+<td style="text-align:center">论文</td>
+<td style="text-align:center">引用</td>
+</tr>
+<tr>
+<td style="text-align:center">金融</td>
+<td style="text-align:center">股票</td>
+<td style="text-align:center">交易</td>
+</tr>
+<tr>
+<td style="text-align:center">网络</td>
+<td style="text-align:center">计算机</td>
+<td style="text-align:center">网络连接</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>本文主要总结一些基础的有向图的算法，包括：有向图中的可达性，寻找有向环，拓扑排序，强连通分量</p>
+<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">public class Digraph &#123;</span><br><span class="line">    private final int V;</span><br><span class="line">    private  int E;</span><br><span class="line">    private List&lt;Integer&gt;[] adj;</span><br><span class="line">    private boolean[] marked;</span><br><span class="line"></span><br><span class="line">    public Digraph(int V) &#123;</span><br><span class="line">        this.V = V;</span><br><span class="line">        this.E = 0;</span><br><span class="line">        adj = (List&lt;Integer&gt;[]) new ArrayList[V];</span><br><span class="line">        for (int v = 0; v &lt; V; v++) &#123;</span><br><span class="line">            adj[v] = new ArrayList&lt;&gt;();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int V()&#123;</span><br><span class="line">        return V;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int E() &#123;</span><br><span class="line">        return E;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addEdge(int v, int w) &#123;</span><br><span class="line">        adj[v].add(w);</span><br><span class="line">        E++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Iterable&lt;Integer&gt; adj(int v) &#123;</span><br><span class="line">        return adj[v];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Digraph reverse() &#123;</span><br><span class="line">        Digraph R = new Digraph(V);</span><br><span class="line">        for (int v = 0; v &lt; V; v++) &#123;</span><br><span class="line">            for (int w : adj(v)) &#123;</span><br><span class="line">                R.addEdge(w, v);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return R;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="有向图中的可达性"><a href="#有向图中的可达性" class="headerlink" title="有向图中的可达性"></a>有向图中的可达性</h1><p><strong>单点可达性</strong>：给定一幅有向图和一个起点s，回答“是否存在一条从s到达给定顶点v的有向路径？”等类似的问题。<br>使用深度优先搜索的方法，在图中进行从s进行深度优先遍历，然后查询点v是否被访问。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public void directedDFS(Digraph G, int s) &#123;</span><br><span class="line">    marked = new boolean[G.V()];</span><br><span class="line">    dfs(G, s);</span><br><span class="line">&#125;</span><br><span class="line">private void dfs(Digraph G, int v) &#123;</span><br><span class="line">    marked[v] = true;</span><br><span class="line">    for (int w : G.adj(v)) &#123;</span><br><span class="line">        if (!marked[w]) &#123;</span><br><span class="line">            dfs(G, w);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="寻找有向环"><a href="#寻找有向环" class="headerlink" title="寻找有向环"></a>寻找有向环</h1><p>判断有向图中是否存在环，是解决一些问题的基础，如优先级限制下的调度问题，拓扑排序等<br>解决深度优先搜索的方法解决有向环的思路：深度优先搜索过程中，递归调用的栈表示的正是“当前”正在遍历的有向路径，一旦我们找到一条有向边（v,w）且w已经存在于栈中，就找到了一个环，因为栈表示的是一条由w到v的有向路径，而（v，w）正好补全了这个环。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">private Stack&lt;Integer&gt; cycle;//有向环中的所有顶点（如果存在）</span><br><span class="line"></span><br><span class="line">public DirectedCycle(Digraph G) &#123;</span><br><span class="line">    private boolean[] onStack = new boolean[G.V()];//递归调用的栈上的所有顶点</span><br><span class="line">    private int[] edgeTo = new int[G.V()];</span><br><span class="line">    private boolean[] marked = new boolean[G.V()];</span><br><span class="line">    for (int v = 0; v &lt; G.V(); v++) &#123;</span><br><span class="line">        if (!marked[v]) &#123;</span><br><span class="line">            dfs(G, v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">private void dfs(Digraph G, int v) &#123;</span><br><span class="line">    onStack[v] = true;</span><br><span class="line">    marked[v] = true;</span><br><span class="line">    for (int w : G.adj(v)) &#123;</span><br><span class="line">        if (this.hasCycle()) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125; else if (!marked[w]) &#123;</span><br><span class="line">            edgeTo[w] = v;</span><br><span class="line">            dfs(G, w);</span><br><span class="line">        &#125; else if (onStack[w]) &#123;</span><br><span class="line">            cycle = new Stack&lt;Integer&gt;();</span><br><span class="line">            for (int x = v; x != w; x = edgeTo[x]) &#123;</span><br><span class="line">                cycle.push(x);</span><br><span class="line">            &#125;</span><br><span class="line">            cycle.push(w);</span><br><span class="line">            cycle.push(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    onStack[v] = false;</span><br><span class="line">&#125;</span><br><span class="line">public boolean hasCycle() &#123;</span><br><span class="line">    return cycle != null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h1><p>给定一幅有向图，将所有的顶点排序，使得所有的有向边均从排在前面的元素指向排在后面的元素（或者说明无法做到这一点，即有环）</p>
+<h2 id="逆后续排列方法"><a href="#逆后续排列方法" class="headerlink" title="逆后续排列方法"></a>逆后续排列方法</h2><p>如果将深度优先搜索的参数顶点保存在一个数据结构中，然后遍历这个数据结构就能访问每个顶点，遍历的顺序取决于这个数据结构的性质以及实在递归之前还是在之后进行保存数据，通常有以下三种排列顺序：</p>
+<ol>
+<li>前序：在递归调用之前将顶点加入队列，前序就是dfs()的调用顺序</li>
+<li>后续：在递归调用之后将顶点加入队列，后序就是顶点遍历完成的顺序</li>
+<li>逆后续：在递归调用之后将顶点压入栈，逆后续就有向无环图的拓扑排序顺序</li>
+</ol>
+<blockquote>
+<p>命题：一幅有向无环图的拓扑顺序就是所有顶点的逆后续排列</p>
+</blockquote>
+<p>证明：对于任意一条边（v,w）在调用dfs(v)时，下面三种情况必有一种成立，<br>1）dfs(w)已经被调用过，且已经返回了（w已经被标记）<br>2）dfs(w)还没有被调用（w还未被标记），因此（v,w）会直接或间接调用并返回dfs(w),且dfs(w)会在dfs(v)返回之前返回<br>3）dfs(w)已经被调用但还未返回。证明的关键在于，在有向无环图中这种情况是不可能出现的，这是由于递归调用链意味着存在从w到v的路径，但存在（v，w）则表示存在环<br>而在1）和2）这两种情况中，dfs(w)都会在dfs(v)之前完成，因此在后续排列中w排在v之前而在逆后续排列中w排在v之后，因此任意一条边(v,w)都如我们所愿地从排名较前的顶点指向排名之后的顶点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">private boolean[] marked;</span><br><span class="line">private Queue&lt;Integer&gt; pre;  //所有顶点的前序排列，dfs的调用顺序</span><br><span class="line">private Queue&lt;Integer&gt; post;  //所以顶点的后续排列,顶点遍历完成的顺序</span><br><span class="line">private Stack&lt;Integer&gt; reversePost;  //所有顶点的逆后续排列</span><br><span class="line"></span><br><span class="line">public void depthFirstOrder(Digraph G) &#123;</span><br><span class="line">    pre = new Queue&lt;&gt;();</span><br><span class="line">    post = new Queue&lt;&gt;();</span><br><span class="line">    reversePost = new Stack&lt;&gt;();</span><br><span class="line">    marked = new boolean[G.V()];</span><br><span class="line"></span><br><span class="line">    for (int v = 0; v &lt; G.V(); v++) &#123;</span><br><span class="line">        if (!marked[v]) &#123;</span><br><span class="line">            dfs(G, v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void dfs(Digraph G, int v) &#123;</span><br><span class="line">    pre.enqueue(v);</span><br><span class="line">    marked[v] = true;</span><br><span class="line">    for (int w : G.adj(v)) &#123;</span><br><span class="line">        if (!marked[w]) &#123;</span><br><span class="line">            dfs(G, w);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    post.enqueue(v);</span><br><span class="line">    reversePost.push(v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public Iterable&lt;Integer&gt; pre() &#123;</span><br><span class="line">    return pre;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public Iterable&lt;Integer&gt; post() &#123;</span><br><span class="line">    return post;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public Iterable&lt;Integer&gt; reversePost() &#123;</span><br><span class="line">    return reversePost;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public Iterable&lt;Integer&gt; topological(Digraph G) &#123;</span><br><span class="line">    DirectedCycle cyclefinder = new DirectedCycle(G);</span><br><span class="line">    if (!Digraph.hasCycle()) &#123;//判断是否有环</span><br><span class="line">        Iterable&lt;Integer&gt; order = reversePost;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return order;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="减治法实现"><a href="#减治法实现" class="headerlink" title="减治法实现"></a>减治法实现</h2><p>实现原理：不断地做这样一件事，在余下的有向图中求取一个源（source）（PS：定义入度为0的顶点为有向图的源），它是一个没有输入边的顶点，然后把它和所有从它出发的边都删除。（如果有多个这样的源，可以任意选择一个。如果这样的源不存在，算法停止，此时该问题无解）。<br><img src="/2018/09/alg-3006000/拓扑排序.png" title="图1 拓扑排序"></p>
+<p>首先我们需要在有向图的数据结构Digraph中，增加一个数组用于保存所有的顶点的入度，同时在增加一条边的时候，顶点的入度加一。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">private int[] inDegree;</span><br><span class="line">public Digraph(int V) &#123;</span><br><span class="line">	inDegree = new int[V];</span><br><span class="line">	······</span><br><span class="line">&#125;</span><br><span class="line">public void addEdge(int v, int w) &#123;</span><br><span class="line">    ······</span><br><span class="line">    inDegree[w]++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public Iterable&lt;Integer&gt; topoOrder(Digraph G) &#123;</span><br><span class="line">    Iterable&lt;Integer&gt; result = new ArrayDeque&lt;&gt;();</span><br><span class="line">    int[] inDegreeTem = new int[G.V()];</span><br><span class="line">    for (int i = 0; i &lt; G.V(); i++) &#123;</span><br><span class="line">        inDegreeTem[i] = G.getInDegree(i);</span><br><span class="line">    &#125;</span><br><span class="line">    int count = 0;//用于计算当前遍历的顶点个数</span><br><span class="line">    boolean flag = true;</span><br><span class="line">    while (flag) &#123;</span><br><span class="line">        for (int v = 0; v &lt; G.V(); v++) &#123;</span><br><span class="line">            if (inDegreeTem[v] == 0) &#123;</span><br><span class="line">                ((ArrayDeque&lt;Integer&gt;) result).push(v);</span><br><span class="line">                inDegreeTem[v] = -1;//代表第i个顶点已被遍历</span><br><span class="line">                count++;</span><br><span class="line">                for (int w : G.adj(v)) &#123;</span><br><span class="line">                    if (inDegreeTem[w] &gt; 0) &#123;</span><br><span class="line">                        inDegreeTem[w]--;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (count == G.V()) &#123;</span><br><span class="line">            flag = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="强连通分量"><a href="#强连通分量" class="headerlink" title="强连通分量"></a>强连通分量</h1><p>若有向图G中的任意两个顶点v<sub>i</sub>和v<sub>j</sub>都是连通的，则称图G是<strong>强连通图</strong>。有向图G中的极大强连通子图称为G的<strong>强联通分量</strong>。</p>
+<h2 id="Kosaraju算法"><a href="#Kosaraju算法" class="headerlink" title="Kosaraju算法"></a>Kosaraju算法</h2><p>第一步：计算出有向图G的反向图G<sup>R</sup>的逆后序排列<br>第二步：在有向图G中进行标准的深度优先搜索，按照刚才计算出的逆后序排列顺序而非标准顺序<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">private boolean[] marked;//已访问过的顶点</span><br><span class="line">private int[] id;//强连通分量的标识符</span><br><span class="line">private int count;//强连通分量的数量</span><br><span class="line"></span><br><span class="line">public void kosarajuSCC(Digraph G) &#123;</span><br><span class="line">    marked = new boolean[G.V()];</span><br><span class="line">    id = new int[G.V()];</span><br><span class="line">    Stack&lt;Integer&gt; reversePost = G.reverse().reversePost();</span><br><span class="line">    for (int s : reversePost) &#123;</span><br><span class="line">        if (!marked[s]) &#123;</span><br><span class="line">            dfs(G, s);</span><br><span class="line">            count++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public void dfs(Digraph G, int v) &#123;</span><br><span class="line">    marked[v] = true;</span><br><span class="line">    id[v] = count;</span><br><span class="line">    for (int w : G.adj(v)) &#123;</span><br><span class="line">        if (!marked[v]) &#123;</span><br><span class="line">            dfs(G, w);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public boolean stronglyConnected(int v, int w) &#123;</span><br><span class="line">    return id[v] == id[w];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public int id(int v) &#123;</span><br><span class="line">    return id[v];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public int count() &#123;</span><br><span class="line">    return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Tarjan算法"><a href="#Tarjan算法" class="headerlink" title="Tarjan算法"></a>Tarjan算法</h2><p>tarjan基于DFS，用dfs遍历图G的所有点。分别建立两个数组Dfn和Low，Dfn[i]代表dfs到达顶点i的时间,Low[i]代表能够直接或者间接到达的最小顶点时间。<br>1.初始化，当首次搜索到点i时，Dfn与Low数组的值都为到该点的时间，Low[i]=Dfn[i]=time++。<br>2.将搜索到的点压入栈顶。<br>3.当点u与点v相连，如果v并不在栈中，先将v压入栈，dfs遍历v，则Low[u]=min(Low[u],Low[v]).<br>4.当点u与点v相连，如果v在栈中，则Low[u]=min(low[u],dfn[v]).<br>5.每当搜索到的点经过以上操作后，当Low[u]=Dfn[u]，则此时栈里u以及u以上的顶点全部出栈，即为一个极大强连通分量。<br>6.继续搜索，或许会更换搜索的起点，因为整个有向图可能分为多个不连通的部分，直到所有点被遍历。</p>
+<pre><code>private boolean[] marked;//已访问过的顶点
+private int[] low;
+private int[] dfn;//强连通分量的标识符
+private int count;//强连通分量的数量
+private Stack&lt;Integer&gt; stack;
+private boolean[] inStack;
+private int time;
+
+private List&lt;ArrayList&lt;Integer&gt;&gt; result;
+
+public void tarjan(Digraph G) {
+    marked = new boolean[G.V()];
+    low = new int[G.V()];
+    dfn = new int[G.V()];
+    stack = new Stack&lt;&gt;();
+    inStack = new boolean[G.V()];
+    result = new ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();
+    for (int s = 0; s &lt; G.V(); s++) {
+        if (!marked[s]) {
+            dfs(G, s);
+        }
+    }
+}
+
+public void dfs(Digraph G, int v) {
+    low[v] = dfn[v] = time++;
+    marked[v] = true;
+    inStack[v] = true;
+    stack.push(v);
+    for (int w : G.adj(v)) {
+        if (!marked[w]) {
+            dfs(G, w);
+            low[v] = Math.min(low[v], low[w]);
+        } else if (inStack[w]) {
+            low[v] = Math.min(low[v], dfn[w]);
+        }
+    }
+    if (low[v] == dfn[v]) {
+        ArrayList&lt;Integer&gt; temp =new ArrayList&lt;Integer&gt;();
+        int j = -1;
+        while (v != j) {
+            j = stack.pop();
+            inStack[j] = false;
+            temp.add(j);
+        }
+        result.add(temp);
+
+    }
+}
+
+public List&lt;ArrayList&lt;Integer&gt;&gt; result(){
+    return result;
+}
+</code></pre><p>最后tarjan的实现步骤可以看<a href="https://blog.csdn.net/u013376508/article/details/50995675" target="_blank" rel="noopener">这篇文章</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图/" rel="tag"># 图</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/design-4001000/" rel="next" title="单例模式">
+                <i class="fa fa-chevron-left"></i> 单例模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lizhiyong</p>
+              <p class="site-description motion-element" itemprop="description">菜鸟的涅槃梦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据类型"><span class="nav-number">1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#有向图中的可达性"><span class="nav-number">2.</span> <span class="nav-text">有向图中的可达性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#寻找有向环"><span class="nav-number">3.</span> <span class="nav-text">寻找有向环</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#拓扑排序"><span class="nav-number">4.</span> <span class="nav-text">拓扑排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#逆后续排列方法"><span class="nav-number">4.1.</span> <span class="nav-text">逆后续排列方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#减治法实现"><span class="nav-number">4.2.</span> <span class="nav-text">减治法实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#强连通分量"><span class="nav-number">5.</span> <span class="nav-text">强连通分量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kosaraju算法"><span class="nav-number">5.1.</span> <span class="nav-text">Kosaraju算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tarjan算法"><span class="nav-number">5.2.</span> <span class="nav-text">Tarjan算法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lizhiyong</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">20.2k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
