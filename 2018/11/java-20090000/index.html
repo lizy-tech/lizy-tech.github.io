@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="atomic包," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="atomic是JUC下的原子包，主要是为了解决多线程下的原子操作的问题。在jdk1.7中共有12各类，1.8的版本中又增加了5个类。本篇主要介绍这些类中的一些常用方法。在介绍原子包中的类之前，想简单说一下Unsafe这个类。解决多线程下数据的问题，其实就是要保证CPU中要操作的数据要和内存中的数据一样，而java中我们是无法直接操作内存的，所以通常无法知道CPU当前操作的数据是否跟内存中的数据一样">
+<meta name="keywords" content="atomic包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java并发--atomic包小结">
+<meta property="og:url" content="https://lizy-tech.github.io/2018/11/java-20090000/index.html">
+<meta property="og:site_name" content="lizy-tech">
+<meta property="og:description" content="atomic是JUC下的原子包，主要是为了解决多线程下的原子操作的问题。在jdk1.7中共有12各类，1.8的版本中又增加了5个类。本篇主要介绍这些类中的一些常用方法。在介绍原子包中的类之前，想简单说一下Unsafe这个类。解决多线程下数据的问题，其实就是要保证CPU中要操作的数据要和内存中的数据一样，而java中我们是无法直接操作内存的，所以通常无法知道CPU当前操作的数据是否跟内存中的数据一样">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-23T09:04:01.698Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java并发--atomic包小结">
+<meta name="twitter:description" content="atomic是JUC下的原子包，主要是为了解决多线程下的原子操作的问题。在jdk1.7中共有12各类，1.8的版本中又增加了5个类。本篇主要介绍这些类中的一些常用方法。在介绍原子包中的类之前，想简单说一下Unsafe这个类。解决多线程下数据的问题，其实就是要保证CPU中要操作的数据要和内存中的数据一样，而java中我们是无法直接操作内存的，所以通常无法知道CPU当前操作的数据是否跟内存中的数据一样">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://lizy-tech.github.io/2018/11/java-20090000/"/>
+
+
+
+
+
+  <title>java并发--atomic包小结 | lizy-tech</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lizy-tech</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">编程的苦与乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lizy-tech.github.io/2018/11/java-20090000/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lizhiyong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lizy-tech">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java并发--atomic包小结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-07T14:47:42+08:00">
+                2018-11-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/并发/" itemprop="url" rel="index">
+                    <span itemprop="name">并发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3,978 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  20 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>atomic是JUC下的原子包，主要是为了解决多线程下的原子操作的问题。在jdk1.7中共有12各类，1.8的版本中又增加了5个类。本篇主要介绍这些类中的一些常用方法。在介绍原子包中的类之前，想简单说一下Unsafe这个类。解决多线程下数据的问题，其实就是要保证CPU中要操作的数据要和内存中的数据一样，而java中我们是无法直接操作内存的，所以通常无法知道CPU当前操作的数据是否跟内存中的数据一样，Unsafe类提供了一些本地方法，可以获取到内存中的值，修改内存中的数据。</p>
+<h1 id="1-AtomicInteger、AtomicBoolean、AtomicLong"><a href="#1-AtomicInteger、AtomicBoolean、AtomicLong" class="headerlink" title="1. AtomicInteger、AtomicBoolean、AtomicLong"></a>1. AtomicInteger、AtomicBoolean、AtomicLong</h1><p>atomic包下提供了AtomicBoolean、AtomicLong、AtomicInteger三个原子更新基本类型，以AtomicInteger为例，其他两种基本类似。以下是AtomicInteger源码分析如下：</p>
+<p>四个成员变量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">private static final long serialVersionUID = 6214790243416807050L;</span><br><span class="line">// setup to use Unsafe.compareAndSwapInt for updates</span><br><span class="line">private static final Unsafe unsafe = Unsafe.getUnsafe();</span><br><span class="line">private static final long valueOffset;//用于获得内存中的值</span><br><span class="line">private volatile int value;</span><br><span class="line"></span><br><span class="line">static &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        valueOffset = unsafe.objectFieldOffset(AtomicInteger.class.getDeclaredField(&quot;value&quot;));</span><br><span class="line">    &#125; catch (Exception ex) &#123; throw new Error(ex); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后有两个构造函数，一个有初始值，一个无初始值，以及get和set函数，还有一个lazySet()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//立刻修改旧值，别的线程可以立刻看到更新后的值</span><br><span class="line">public final void set(int newValue) &#123;</span><br><span class="line">    value = newValue;</span><br><span class="line">&#125;</span><br><span class="line">//而lazySet不会立刻(但是最终会)修改旧值，别的线程看到新值的时间会延迟一些。</span><br><span class="line">public final void lazySet(int newValue) &#123;</span><br><span class="line">    unsafe.putOrderedInt(this, valueOffset, newValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其他主要函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public final int getAndSet(int newValue)       //给AtomicInteger设置newValue并返回加oldValue</span><br><span class="line">public final boolean compareAndSet(int expect, int update)    //如果输入的值和期望值相等就set并返回true/false</span><br><span class="line">public final boolean weakCompareAndSet(int expect, int update) //与compareAndSet实现相同，源码介绍说不保证顺序执行，可能虚拟机有相应的处理</span><br><span class="line">public final int getAndIncrement()     //对AtomicInteger原子的加1并返回当前自增前的value</span><br><span class="line">public final int getAndDecrement()   //对AtomicInteger原子的减1并返回自减之前的的value</span><br><span class="line">public final int getAndAdd(int delta)   //对AtomicInteger原子的加上delta值并返加之前的value</span><br><span class="line">public final int incrementAndGet()   //对AtomicInteger原子的加1并返回加1后的值</span><br><span class="line">public final int decrementAndGet()    //对AtomicInteger原子的减1并返回减1后的值</span><br><span class="line">public final int addAndGet(int delta)   //给AtomicInteger原子的加上指定的delta值并返回加后的值</span><br><span class="line"></span><br><span class="line">//jdk1.8之后新增的函数</span><br><span class="line">public final int getAndUpdate(IntUnaryOperator updateFunction) //IntUnaryOperator接收lambda表达式，返回值为int</span><br><span class="line">public final int updateAndGet(IntUnaryOperator updateFunction)</span><br><span class="line">public final int getAndAccumulate(int x,IntBinaryOperator accumulatorFunction)//IntBinaryOperator 接收lambda表达式和函数引用，</span><br><span class="line">public final int accumulateAndGet(int x,IntBinaryOperator accumulatorFunction)</span><br></pre></td></tr></table></figure></p>
+<p>getAndSet(int)函数，获取当前值，并把当前值修改成一个新的值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public final int getAndSet(int newValue) &#123;</span><br><span class="line">    return unsafe.getAndSetInt(this, valueOffset, newValue);</span><br><span class="line">&#125;</span><br><span class="line">//unsafe类中的getAndSetInt函数如下,这里主要使用一个do...while循环</span><br><span class="line">//来保证内存中值与期望的值相等,然后修改当前的值，注意最后返回的是内存中的值，而不是修改后的值</span><br><span class="line">public final int getAndSetInt(Object var1, long var2, int var4) &#123;</span><br><span class="line">    int var5;</span><br><span class="line">    do &#123;</span><br><span class="line">        var5 = this.getIntVolatile(var1, var2);</span><br><span class="line">    &#125; while(!this.compareAndSwapInt(var1, var2, var5, var4));</span><br><span class="line"></span><br><span class="line">    return var5;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>AtomicBoolean中的函数基本跟AtomicInteger相同的功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public AtomicBoolean(boolean initialValue)</span><br><span class="line">public AtomicBoolean()</span><br><span class="line">public final boolean get()</span><br><span class="line">public final boolean compareAndSet(boolean expect, boolean update)</span><br><span class="line">public final void set(boolean newValue)</span><br><span class="line">public final boolean getAndSet(boolean newValue)</span><br></pre></td></tr></table></figure></p>
+<p>AtomicLong中的函数基本跟AtomicInteger相同的功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public AtomicLong(long initialValue)</span><br><span class="line">public AtomicLong()</span><br><span class="line">public final long get()</span><br><span class="line">public final void set(long newValue)</span><br><span class="line">public final void lazySet(long newValue)</span><br><span class="line"></span><br><span class="line">public final long getAndSet(long newValue)</span><br><span class="line">public final boolean compareAndSet(long expect, long update)</span><br><span class="line">public final long getAndIncrement()</span><br><span class="line">public final long getAndDecrement()</span><br><span class="line">public final long getAndAdd(long delta)</span><br><span class="line"></span><br><span class="line">public final long incrementAndGet()</span><br><span class="line">public final long decrementAndGet()</span><br><span class="line">public final long addAndGet(long delta)</span><br></pre></td></tr></table></figure></p>
+<h1 id="2-AtomicIntegerArray和AtomicLongArray"><a href="#2-AtomicIntegerArray和AtomicLongArray" class="headerlink" title="2. AtomicIntegerArray和AtomicLongArray"></a>2. AtomicIntegerArray和AtomicLongArray</h1><p>AtomicIntegerArray和AtomicLongArray主要提供对Integer类型数组和Long类型数组的原子操作</p>
+<p>主要成员变量和获取数组元素地址的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">private static final long serialVersionUID = 2862133569453604235L;//用于序列化</span><br><span class="line"></span><br><span class="line">//使用Unsafe类操作内存，达到线程安全的目的</span><br><span class="line">private static final Unsafe unsafe = Unsafe.getUnsafe();</span><br><span class="line">//获取该类型的数组，在对象存储时，存放第一个元素的内存地址，相对于数组对象起始地址的内存偏移量</span><br><span class="line">private static final int base = unsafe.arrayBaseOffset(int[].class);</span><br><span class="line">private static final int shift;</span><br><span class="line">private final int[] array;</span><br><span class="line"></span><br><span class="line">static &#123;</span><br><span class="line">    int scale = unsafe.arrayIndexScale(int[].class);//获取该类型的数组中元素的大小，占用多少个字节。</span><br><span class="line">    if ((scale &amp; (scale - 1)) != 0)</span><br><span class="line">        throw new Error(&quot;data type scale not a power of two&quot;);</span><br><span class="line">    shift = 31 - Integer.numberOfLeadingZeros(scale);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private long checkedByteOffset(int i) &#123;//获取下标为i的元素的内存地址</span><br><span class="line">    if (i &lt; 0 || i &gt;= array.length)</span><br><span class="line">        throw new IndexOutOfBoundsException(&quot;index &quot; + i);</span><br><span class="line"></span><br><span class="line">    return byteOffset(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static long byteOffset(int i) &#123;</span><br><span class="line">    return ((long) i &lt;&lt; shift) + base;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>构造函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//创建一个新的AtomicIntegerArray给定长度的,所有元素最初零</span><br><span class="line">public AtomicIntegerArray(int length) &#123;</span><br><span class="line">    array = new int[length];</span><br><span class="line">&#125;</span><br><span class="line">//创建一个新的AtomicIntegerArray长度一样,和所有元素抄袭,给定的数组。</span><br><span class="line">public AtomicIntegerArray(int length) &#123;</span><br><span class="line">    array = new int[length];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>主要方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public final int get(int i)//获取位置 i的当前值。</span><br><span class="line">private int getRaw(long offset)//获取位置 offset的当前值。</span><br><span class="line">public final void set(int i, int newValue)//设置i位置的元素为给定的值。</span><br><span class="line">public final void lazySet(int i, int newValue)</span><br><span class="line">public final int getAndSet(int i, int newValue)//设置i位置的元素为给定的值,并返回旧值</span><br><span class="line">public final boolean compareAndSet(int i, int expect, int update) //设置i位置元素为给定值，如果i位置的值==期望值</span><br><span class="line">private boolean compareAndSetRaw(long offset, int expect, int update)</span><br><span class="line">public final boolean weakCompareAndSet(int i, int expect, int update)</span><br><span class="line">public final int getAndIncrement(int i)//i位置的值加一，返回旧值</span><br><span class="line">public final int getAndDecrement(int i)//i位置的值减一，返回旧值</span><br><span class="line">public final int getAndAdd(int i, int delta)//i位置的值增加delta，返回旧值</span><br><span class="line">public final int incrementAndGet(int i)//i位置的值加一，返回新值</span><br><span class="line">public final int decrementAndGet(int i)//i位置的值减一，返回新值</span><br><span class="line">public final int addAndGet(int i, int delta)//i位置的值加delta，返回新值</span><br><span class="line"></span><br><span class="line">//jdk1.8新增方法</span><br><span class="line">public final int getAndUpdate(int i, IntUnaryOperator updateFunction)</span><br><span class="line">public final int updateAndGet(int i, IntUnaryOperator updateFunction)</span><br><span class="line">public final int getAndAccumulate(int i, int x, IntBinaryOperator accumulatorFunction)</span><br><span class="line">public final int accumulateAndGet(int i, int x,IntBinaryOperator accumulatorFunction)</span><br></pre></td></tr></table></figure></p>
+<p>compareAndSet(int i, int expect, int update)源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public final boolean compareAndSet(int i, int expect, int update) &#123;//调用自身类方法</span><br><span class="line">    return compareAndSetRaw(checkedByteOffset(i), expect, update);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private boolean compareAndSetRaw(long offset, int expect, int update) &#123;</span><br><span class="line">    return unsafe.compareAndSwapInt(array, offset, expect, update);</span><br><span class="line">&#125;</span><br><span class="line">//Unsafe中的compareAndSwapInt如下</span><br><span class="line">public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5);</span><br></pre></td></tr></table></figure></p>
+<p>AtomicLongArray中的函数跟AtomicIntegerArray中基本相同<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public final void set(int i, long newValue)</span><br><span class="line">public final void lazySet(int i, long newValue)</span><br><span class="line">public final long getAndSet(int i, long newValue)</span><br><span class="line">public final boolean compareAndSet(int i, long expect, long update)</span><br><span class="line">private boolean compareAndSetRaw(long offset, long expect, long update)</span><br><span class="line">public final boolean weakCompareAndSet(int i, long expect, long update)</span><br><span class="line">public final long getAndIncrement(int i)</span><br><span class="line">public final long getAndDecrement(int i)</span><br><span class="line">public final long getAndAdd(int i, long delta)</span><br><span class="line">public final long incrementAndGet(int i)</span><br><span class="line">public final long decrementAndGet(int i)</span><br><span class="line">public long addAndGet(int i, long delta)</span><br><span class="line"></span><br><span class="line">public final long getAndUpdate(int i, LongUnaryOperator updateFunction) </span><br><span class="line">public final long updateAndGet(int i, LongUnaryOperator updateFunction)</span><br><span class="line">public final long getAndAccumulate(int i, long x, LongBinaryOperator accumulatorFunction)</span><br><span class="line"> public final long accumulateAndGet(int i, long x, LongBinaryOperator accumulatorFunction)</span><br></pre></td></tr></table></figure></p>
+<h1 id="3-AtomicReference和AtomicReferenceArray"><a href="#3-AtomicReference和AtomicReferenceArray" class="headerlink" title="3. AtomicReference和AtomicReferenceArray"></a>3. AtomicReference和AtomicReferenceArray</h1><p>AtomicReference是为了满足对“对象”进行原子操作的。<br>使用例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">public class AtomicReferenceTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Person one = new Person(1, &quot;xiaoming&quot;);</span><br><span class="line">        AtomicReference&lt;Person&gt; ato = new AtomicReference&lt;&gt;();</span><br><span class="line">        ato.set(one);</span><br><span class="line">        //以下对对象的修改操作可以放在对象中进行</span><br><span class="line">        System.out.println(ato.get().toString());//Person&#123;id=1, name=&apos;xiaoming&apos;&#125;</span><br><span class="line">        //ato.compareAndSet(one, new Person(2, &quot;aa&quot;));</span><br><span class="line">        ato.getAndSet(new Person(2, &quot;aa&quot;));</span><br><span class="line">        System.out.println(ato.get().toString());//Person&#123;id=2, name=&apos;aa&apos;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Person&#123;</span><br><span class="line">    private int id;</span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    public Person(int id, String name) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getId() &#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setId(int id) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;Person&#123;&quot; +</span><br><span class="line">                &quot;id=&quot; + id +</span><br><span class="line">                &quot;, name=&apos;&quot; + name + &apos;\&apos;&apos; +</span><br><span class="line">                &apos;&#125;&apos;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>AtomicReference的源码与AtomicInteger等相比也基本相同：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">private static final long serialVersionUID = -1848883965231344442L;</span><br><span class="line"></span><br><span class="line">private static final Unsafe unsafe = Unsafe.getUnsafe();</span><br><span class="line">private static final long valueOffset;</span><br><span class="line"></span><br><span class="line">static &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        valueOffset = unsafe.objectFieldOffset</span><br><span class="line">            (AtomicReference.class.getDeclaredField(&quot;value&quot;));</span><br><span class="line">    &#125; catch (Exception ex) &#123; throw new Error(ex); &#125;</span><br><span class="line">&#125;</span><br><span class="line">private volatile V value;</span><br><span class="line"></span><br><span class="line">public AtomicReference(V initialValue)</span><br><span class="line">public AtomicReference()</span><br><span class="line">public final V get()</span><br><span class="line">public final void set(V newValue)</span><br><span class="line">public final void lazySet(V newValue)</span><br><span class="line">public final boolean compareAndSet(V expect, V update)</span><br><span class="line">public final boolean weakCompareAndSet(V expect, V update)</span><br><span class="line">public final V getAndSet(V newValue)</span><br><span class="line"></span><br><span class="line">//jdk1.8后增加的方法</span><br><span class="line">public final V getAndUpdate(UnaryOperator&lt;V&gt; updateFunction)</span><br><span class="line">public final V updateAndGet(UnaryOperator&lt;V&gt; updateFunction)</span><br><span class="line">public final V getAndAccumulate(V x, BinaryOperator&lt;V&gt; accumulatorFunction)</span><br><span class="line">public final V accumulateAndGet(V x, BinaryOperator&lt;V&gt; accumulatorFunction)</span><br></pre></td></tr></table></figure></p>
+<p>AtomicReference与AtomicInteger相对，AtomicReferenceArray与AtomicIntergerArray相对，这样对比来看也是比较简单的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">private static final long serialVersionUID = -6209656149925076980L;</span><br><span class="line"></span><br><span class="line">private static final Unsafe unsafe;</span><br><span class="line">private static final int base;</span><br><span class="line">private static final int shift;</span><br><span class="line">private static final long arrayFieldOffset;</span><br><span class="line">private final Object[] array; // must have exact type Object[]</span><br><span class="line"></span><br><span class="line">static &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        unsafe = Unsafe.getUnsafe();</span><br><span class="line">        arrayFieldOffset = unsafe.objectFieldOffset</span><br><span class="line">            (AtomicReferenceArray.class.getDeclaredField(&quot;array&quot;));</span><br><span class="line">        base = unsafe.arrayBaseOffset(Object[].class);</span><br><span class="line">        int scale = unsafe.arrayIndexScale(Object[].class);</span><br><span class="line">        if ((scale &amp; (scale - 1)) != 0)</span><br><span class="line">            throw new Error(&quot;data type scale not a power of two&quot;);</span><br><span class="line">        shift = 31 - Integer.numberOfLeadingZeros(scale);</span><br><span class="line">    &#125; catch (Exception e) &#123;</span><br><span class="line">        throw new Error(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private long checkedByteOffset(int i) &#123;</span><br><span class="line">    if (i &lt; 0 || i &gt;= array.length)</span><br><span class="line">        throw new IndexOutOfBoundsException(&quot;index &quot; + i);</span><br><span class="line">    return byteOffset(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static long byteOffset(int i) &#123;</span><br><span class="line">    return ((long) i &lt;&lt; shift) + base;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public AtomicReferenceArray(int length)</span><br><span class="line">public AtomicReferenceArray(E[] array)</span><br><span class="line">public final E get(int i)</span><br><span class="line">private E getRaw(long offset)</span><br><span class="line">public final void set(int i, E newValue)</span><br><span class="line">public final void lazySet(int i, E newValue)</span><br><span class="line">public final E getAndSet(int i, E newValue)</span><br><span class="line">public final boolean compareAndSet(int i, E expect, E update)</span><br><span class="line">private boolean compareAndSetRaw(long offset, E expect, E update)</span><br><span class="line">public final boolean weakCompareAndSet(int i, E expect, E update)</span><br><span class="line"></span><br><span class="line">//jdk1.8增加的</span><br><span class="line">public final E getAndUpdate(int i, UnaryOperator&lt;E&gt; updateFunction)</span><br><span class="line">public final E updateAndGet(int i, UnaryOperator&lt;E&gt; updateFunction)</span><br><span class="line">public final E getAndAccumulate(int i, E x, BinaryOperator&lt;E&gt; accumulatorFunction)</span><br><span class="line">public final E accumulateAndGet(int i, E x, BinaryOperator&lt;E&gt; accumulatorFunction)</span><br></pre></td></tr></table></figure></p>
+<h1 id="4-AtomicXXXFieldUpdater"><a href="#4-AtomicXXXFieldUpdater" class="headerlink" title="4. AtomicXXXFieldUpdater"></a>4. AtomicXXXFieldUpdater</h1><p>AtomicXXXFieldUpdater主要包括以下几个：AtomicIntegerFieldUpdater，AtomicLongFieldUpdater，AtomicReferenceFieldUpdater。是基于反射的原子更新字段的值。使用的时候会有一些限制：</p>
+<blockquote>
+<ol>
+<li>字段必须是volatile类型的，在线程之间共享变量时保证立即可见.eg:volatile int value = 3</li>
+<li>对于AtomicIntegerFieldUpdater和AtomicLongFieldUpdater只能修改int/long类型的字段，不能修改其包装类型（Integer/Long）。如果要修改包装类型就需要使用AtomicReferenceFieldUpdater。</li>
+</ol>
+</blockquote>
+<p>使用实例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">public class AtomicIntegerFieldUpdaterTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        AtomicIntegerFieldUpdater&lt;People&gt; atomicIntegerFieldUpdater = AtomicIntegerFieldUpdater.newUpdater(People.class, &quot;count&quot;);</span><br><span class="line">        People people = new People();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;对象people的变量count累计前:&quot;+people.getCount());</span><br><span class="line">        for (int i = 0; i &lt; 10000; i++) &#123;</span><br><span class="line">            final int j = i;</span><br><span class="line">            new Thread(new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    atomicIntegerFieldUpdater.getAndIncrement(people);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line">        try &#123;</span><br><span class="line">            Thread.sleep(1000);//为了让上面的线程跑完</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;对象people的变量count累计后:&quot;+atomicIntegerFieldUpdater.get(people));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class People&#123;</span><br><span class="line">    volatile int count;</span><br><span class="line"></span><br><span class="line">    public int getCount() &#123;</span><br><span class="line">        return count;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setCount(int count) &#123;</span><br><span class="line">        this.count = count;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AtomicIntegerFieldUpdater源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@CallerSensitive</span><br><span class="line">public static &lt;U&gt; AtomicIntegerFieldUpdater&lt;U&gt; newUpdater(Class&lt;U&gt; tclass, String fieldName) &#123;</span><br><span class="line">    return new AtomicIntegerFieldUpdaterImpl&lt;U&gt; (tclass, fieldName, Reflection.getCallerClass());</span><br><span class="line">&#125;</span><br><span class="line">//可能会用到的方法</span><br><span class="line"></span><br><span class="line">//1.实现在内部类中</span><br><span class="line">public abstract boolean compareAndSet(T obj, int expect, int update);</span><br><span class="line"> public abstract boolean weakCompareAndSet(T obj, int expect, int update);</span><br><span class="line"> public abstract void set(T obj, int newValue);</span><br><span class="line"> public abstract void lazySet(T obj, int newValue);</span><br><span class="line"> public abstract int get(T obj);</span><br><span class="line">//2.自身实现的方法</span><br><span class="line">public int getAndSet(T obj, int newValue)</span><br><span class="line">public int getAndIncrement(T obj)</span><br><span class="line">public int getAndDecrement(T obj)</span><br><span class="line">public int getAndAdd(T obj, int delta)</span><br><span class="line">public int incrementAndGet(T obj)</span><br><span class="line">public int decrementAndGet(T obj)</span><br><span class="line">public int addAndGet(T obj, int delta)</span><br><span class="line"></span><br><span class="line">//jdk1.8之后增加的方法</span><br><span class="line">public final int getAndUpdate(T obj, IntUnaryOperator updateFunction) </span><br><span class="line">public final int updateAndGet(T obj, IntUnaryOperator updateFunction)</span><br><span class="line">public final int getAndAccumulate(T obj, int x, IntBinaryOperator accumulatorFunction)</span><br><span class="line">public final int accumulateAndGet(T obj, int x, IntBinaryOperator accumulatorFunction)</span><br></pre></td></tr></table></figure></p>
+<p>AtomicLongFieldUpdater的源码中包含的函数基本与AtomicIntegerFieldUpdater相同个，需要注意的是:由于有些32位系统一次性无法对64位的long进行原子运算，所以为了保证安全，在这些不能一次性进行原子运算的需要区分考虑，利用加synchronized锁来实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@CallerSensitive</span><br><span class="line">public static &lt;U&gt; AtomicLongFieldUpdater&lt;U&gt; newUpdater(Class&lt;U&gt; tclass, String fieldName) &#123;</span><br><span class="line">    Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">    if (AtomicLong.VM_SUPPORTS_LONG_CAS)</span><br><span class="line">        return new CASUpdater&lt;U&gt;(tclass, fieldName, caller);//直接CAS实现</span><br><span class="line">    else</span><br><span class="line">        return new LockedUpdater&lt;U&gt;(tclass, fieldName, caller);//带synchronized锁实现</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>AtomicReferenceFieldUpdater基于反射的实用工具，可以对指定类的指定 volatile 字段进行原子更新。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@CallerSensitive</span><br><span class="line">public static &lt;U,W&gt; AtomicReferenceFieldUpdater&lt;U,W&gt; newUpdater(Class&lt;U&gt; tclass, Class&lt;W&gt; vclass, String fieldName) &#123;</span><br><span class="line">    return new AtomicReferenceFieldUpdaterImpl&lt;U,W&gt; (tclass, vclass, fieldName, Reflection.getCallerClass());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//可能会用到的方法</span><br><span class="line">public abstract boolean compareAndSet(T obj, V expect, V update);</span><br><span class="line">public abstract boolean weakCompareAndSet(T obj, V expect, V update);</span><br><span class="line">public abstract void set(T obj, V newValue);</span><br><span class="line">public abstract void lazySet(T obj, V newValue);</span><br><span class="line">public abstract V get(T obj);</span><br><span class="line">public V getAndSet(T obj, V newValue)</span><br><span class="line">//jdk1.8之后新增的方法</span><br><span class="line">public final V getAndUpdate(T obj, UnaryOperator&lt;V&gt; updateFunction)</span><br><span class="line">public final V updateAndGet(T obj, UnaryOperator&lt;V&gt; updateFunction)</span><br><span class="line">public final V getAndAccumulate(T obj, V x, BinaryOperator&lt;V&gt; accumulatorFunction)</span><br><span class="line">public final V accumulateAndGet(T obj, V x, BinaryOperator&lt;V&gt; accumulatorFunction)</span><br></pre></td></tr></table></figure></p>
+<h1 id="5-AtomicMarkableReference和AtomicStampedReference"><a href="#5-AtomicMarkableReference和AtomicStampedReference" class="headerlink" title="5 AtomicMarkableReference和AtomicStampedReference"></a>5 AtomicMarkableReference和AtomicStampedReference</h1><p>前面介绍的类都使用CAS来保证线程安全，这样可以保证绝大多数情况下的线程安全，却无法解决多线程的ABA问题。</p>
+<blockquote>
+<p>所谓ABA问题:假设初始值为A，线程3和线程1都获取到了初始值A，然后线程1将A改为了B，线程2将B又改回了A，这时候线程3做修改时，是感知不到这个值从A改为了B又改回了A的过程</p>
+</blockquote>
+<p>AtomicStampedReference 本质是有一个int 值作为版本号，每次更改前先取到这个int值的版本号，等到修改的时候，比较当前版本号与当前线程持有的版本号是否一致，如果一致，则进行修改，并将版本号+1（当然加多少或减多少都是可以自己定义的），在zookeeper中保持数据的一致性也是用的这种方式；<br>AtomicMarkableReference将一个boolean值作是否有更改的标记，本质就是它的版本号只有两个，true和false，修改的时候在这两个版本号之间来回切换，这样做并不能解决ABA的问题，只是会降低ABA问题发生的几率而已；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">//AtomicMarkableReference内部类</span><br><span class="line">private static class Pair&lt;T&gt; &#123;</span><br><span class="line">    final T reference;</span><br><span class="line">    final boolean mark;//标记位</span><br><span class="line">    private Pair(T reference, boolean mark) &#123;</span><br><span class="line">        this.reference = reference;</span><br><span class="line">        this.mark = mark;</span><br><span class="line">    &#125;</span><br><span class="line">    static &lt;T&gt; Pair&lt;T&gt; of(T reference, boolean mark) &#123;</span><br><span class="line">        return new Pair&lt;T&gt;(reference, mark);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//AtomicStampedReference内部类</span><br><span class="line">private static class Pair&lt;T&gt; &#123;</span><br><span class="line">    final T reference;</span><br><span class="line">    final int stamp;//版本号</span><br><span class="line">    private Pair(T reference, int stamp) &#123;</span><br><span class="line">        this.reference = reference;</span><br><span class="line">        this.stamp = stamp;</span><br><span class="line">    &#125;</span><br><span class="line">    static &lt;T&gt; Pair&lt;T&gt; of(T reference, int stamp) &#123;</span><br><span class="line">        return new Pair&lt;T&gt;(reference, stamp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="6-DoubleAccumulator、DoubleAdder、LongAccumulator、LongAdder"><a href="#6-DoubleAccumulator、DoubleAdder、LongAccumulator、LongAdder" class="headerlink" title="6 DoubleAccumulator、DoubleAdder、LongAccumulator、LongAdder"></a>6 DoubleAccumulator、DoubleAdder、LongAccumulator、LongAdder</h1><p>这四个类主要使用累加器，都继承了Striped64类，主要用于一个或者多个变量共同维护一个初始为0的sum值。当多线程之间调用更新方法add()产生竞争时，数据集会动态地进行扩充，以此来减少争用。sum()方法会返回当前维持sum值的数据集的总和。</p>
+<p>原子类型累加器其实是应用了热点分离思想，这一点可以类比一下ConcurrentHashMap(JDK1.7  分段锁)的设计思想。</p>
+<p>热点分离简述：</p>
+<p>将竞争的数据进行分解成多个单元，在每个单元中分别进行数据处理。<br>各单元处理完成之后，通过Hash算法进行计算求和，从而得到最终的结果。<br>热点分离优缺点：</p>
+<p>热点分离的设计减小了锁的粒度，提高了高并发环境下的吞吐量。<br>热点分离的设计需要划分额外的空间进行单元数据的存储，增大了空间消耗。</p>
+<p><a href="http://www.cnblogs.com/davidwang456/p/4670777.html" target="_blank" rel="noopener">http://www.cnblogs.com/davidwang456/p/4670777.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/atomic包/" rel="tag"># atomic包</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/leet-3015000/" rel="next" title="LeetCode-45-Jump Game">
+                <i class="fa fa-chevron-left"></i> LeetCode-45-Jump Game
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/java-20001000/" rel="prev" title="java并发-locks包小结">
+                java并发-locks包小结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lizhiyong</p>
+              <p class="site-description motion-element" itemprop="description">菜鸟的涅槃梦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-AtomicInteger、AtomicBoolean、AtomicLong"><span class="nav-number">1.</span> <span class="nav-text">1. AtomicInteger、AtomicBoolean、AtomicLong</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-AtomicIntegerArray和AtomicLongArray"><span class="nav-number">2.</span> <span class="nav-text">2. AtomicIntegerArray和AtomicLongArray</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-AtomicReference和AtomicReferenceArray"><span class="nav-number">3.</span> <span class="nav-text">3. AtomicReference和AtomicReferenceArray</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-AtomicXXXFieldUpdater"><span class="nav-number">4.</span> <span class="nav-text">4. AtomicXXXFieldUpdater</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-AtomicMarkableReference和AtomicStampedReference"><span class="nav-number">5.</span> <span class="nav-text">5 AtomicMarkableReference和AtomicStampedReference</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-DoubleAccumulator、DoubleAdder、LongAccumulator、LongAdder"><span class="nav-number">6.</span> <span class="nav-text">6 DoubleAccumulator、DoubleAdder、LongAccumulator、LongAdder</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lizhiyong</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">43.2k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
